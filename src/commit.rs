@@ -20,3 +20,13 @@ pub(crate) fn command_commit(message: Option<String>) -> anyhow::Result<()> {
     }
     Ok(())
 }
+
+pub(crate) fn command_amend() -> anyhow::Result<()> {
+    cmd!("jj", "squash", "--interactive").run()?;
+    Ok(())
+}
+
+pub(crate) fn command_reset() -> anyhow::Result<()> {
+    cmd!("jj", "squash", "--from", "@-", "--into", "@").run()?;
+    Ok(())
+}

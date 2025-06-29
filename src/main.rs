@@ -9,6 +9,7 @@ use commit::command_commit;
 use duct::cmd;
 
 use crate::{
+    commit::{command_amend, command_reset},
     init::command_init,
     utils::{error, hint, warning},
 };
@@ -42,6 +43,14 @@ enum Commands {
     /// Pull changes from the remote
     #[command(alias = "pl")]
     Pull,
+
+    /// Amend the last commit
+    #[command(alias = "am")]
+    Amend,
+
+    /// Reset the latest commit
+    #[command(alias = "rs")]
+    Reset,
 }
 
 fn check_jj_installed() -> anyhow::Result<()> {
@@ -96,6 +105,16 @@ fn main() {
         }
         Commands::Commit { message } => {
             if let Err(e) = command_commit(message.clone()) {
+                error(&e.to_string());
+            }
+        }
+        Commands::Amend => {
+            if let Err(e) = command_amend() {
+                error(&e.to_string());
+            }
+        }
+        Commands::Reset => {
+            if let Err(e) = command_reset() {
                 error(&e.to_string());
             }
         }

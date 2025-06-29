@@ -25,7 +25,8 @@ export default defineConfig({
       {
         text: 'Local Repo Actions',
         items: [
-          { text: 'Create a Commit', link: '/commit' },
+          { text: 'Initialize a repo', link: '/init' },
+          { text: 'Commit', link: '/commit' },
         ]
       },
       {
