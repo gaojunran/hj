@@ -7,12 +7,16 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct AppConfig {
     pub default_branch: String,
+    pub default_remote_host: String,
+    pub check_gh: bool,
 }
 
 impl Default for AppConfig {
     fn default() -> Self {
         AppConfig {
             default_branch: "main".to_string(),
+            default_remote_host: "github.com".to_string(),
+            check_gh: true,
         }
     }
 }

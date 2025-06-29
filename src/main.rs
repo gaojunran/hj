@@ -8,7 +8,10 @@ use clap::{Parser, Subcommand};
 use commit::command_commit;
 use duct::cmd;
 
-use crate::{init::command_init, utils::error, utils::hint};
+use crate::{
+    init::command_init,
+    utils::{error, hint, warning},
+};
 
 #[derive(Parser)]
 #[command(name = "hj")]
@@ -28,7 +31,7 @@ enum Commands {
     /// Create a commit
     #[command(alias = "cm")]
     Commit {
-        /// Optional commit message
+        /// Commit message. You can omit this for now, and it will prompt you for a message after choosing what to commit.
         message: Option<String>,
     },
 
@@ -50,7 +53,16 @@ fn check_jj_installed() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn main() -> () {
+fn check_gh_installed() -> anyhow::Result<()> {
+    if cmd!("gh", "--version").read().is_err() {
+        return Err(anyhow!(
+            "gh is not installed or not found in PATH. Please install gh first."
+        ));
+    }
+    Ok(())
+}
+
+fn main() {
     let config = config::AppConfig::from_env().unwrap_or_else(|err| {
             let location = dirs::config_dir().unwrap()
                 .join("hj/config.toml");
@@ -63,6 +75,18 @@ fn main() -> () {
         error(&e.to_string());
         hint("https://jj-vcs.github.io/jj/latest/install-and-setup/");
         return;
+    }
+    if let Err(e) = check_gh_installed()
+        && config.default_remote_host == "github.com"
+        && config.check_gh
+    {
+        warning(&e.to_string());
+        hint(
+            "`gh` CLI brings convenience for GitHub operations. Ignore this if you don't use GitHub.",
+        );
+        hint("https://github.com/cli/cli#installation");
+        hint("Set config key `check_gh` to false to disable this check.");
+        println!();
     }
     match &cli.command {
         Commands::Init => {
