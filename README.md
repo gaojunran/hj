@@ -14,11 +14,9 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
 
 ## Planned Features
 
+- 
+- [x] Initialize a repo
 - [x] Commit Specified Files
-
-  ```bash
-  jj commit --interactive --message "Commit message"
-  ```
 
 - [x] Push to Remote
 - [x] Pull from Remote

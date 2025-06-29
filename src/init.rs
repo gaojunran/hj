@@ -1,6 +1,17 @@
 use duct::cmd;
 
-pub(crate) fn command_init() -> anyhow::Result<()> {
+use crate::config::AppConfig;
+
+pub(crate) fn command_init(config: &AppConfig) -> anyhow::Result<()> {
     cmd!("jj", "git", "init").run()?;
+    cmd!(
+        "jj",
+        "bookmark",
+        "set",
+        "-r",
+        "@",
+        config.default_branch.clone()
+    )
+    .run()?;
     Ok(())
 }

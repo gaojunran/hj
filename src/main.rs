@@ -1,4 +1,5 @@
 mod commit;
+mod config;
 mod init;
 mod utils;
 
@@ -49,18 +50,30 @@ fn check_jj_installed() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn main() -> anyhow::Result<()> {
+fn main() -> () {
+    let config = config::AppConfig::from_env().unwrap_or_else(|err| {
+            let location = dirs::config_dir().unwrap()
+                .join("hj/config.toml");
+            error(&err.to_string());
+            hint(&format!("You can put your configuration in {}, or use environment variables prefixed with `HJ_`.", location.display()));
+            std::process::exit(1)
+        });
     let cli = Cli::parse();
     if let Err(e) = check_jj_installed() {
         error(&e.to_string());
         hint("https://jj-vcs.github.io/jj/latest/install-and-setup/");
+        return;
     }
     match &cli.command {
         Commands::Init => {
-            command_init()?;
+            if let Err(e) = command_init(&config) {
+                error(&e.to_string());
+            }
         }
         Commands::Commit { message } => {
-            command_commit(message.clone())?;
+            if let Err(e) = command_commit(message.clone()) {
+                error(&e.to_string());
+            }
         }
         Commands::Push => {
             println!("Changes pushed.");
@@ -69,5 +82,4 @@ fn main() -> anyhow::Result<()> {
             println!("Changes pulled.");
         }
     }
-    Ok(())
 }
