@@ -14,3 +14,8 @@ serde = { version = "1.0", features = ["derive"] }
 dirs = "6.0.0"
 regex = "1.11.1"
 rand = { version = "0.9.1", features = [ "alloc" ] }
+reqwest = { version =  "0.12.20", default-features = false, features = [ "blocking", "json", "default-tls", "charset", "system-proxy" ] }
+indicatif = "0.17.11"
+tar = "0.4.44"
+flate2 = "1.1.2"
+

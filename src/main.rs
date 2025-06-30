@@ -1,6 +1,7 @@
 mod clone;
 mod commit;
 mod config;
+mod download;
 mod init;
 mod utils;
 
@@ -12,6 +13,7 @@ use duct::cmd;
 use crate::{
     clone::command_clone,
     commit::{command_amend, command_reset},
+    download::command_download,
     init::command_init,
     utils::{error, hint, warning},
 };
@@ -54,6 +56,7 @@ enum Commands {
 
     /// Download a repo without its version history.
     /// Learnt from github@psnszsn/degit-rs.
+    #[command(aliases = ["dl", "down"])]
     Download { url_or_fullname: String },
 
     /// Push changes to the remote
@@ -149,6 +152,10 @@ fn main() {
         Commands::Pull => {
             println!("Changes pulled.");
         }
-        Commands::Download { url_or_fullname } => todo!(),
+        Commands::Download { url_or_fullname } => {
+            if let Err(e) = command_download(&config, url_or_fullname) {
+                error(&e.to_string());
+            }
+        }
     }
 }
