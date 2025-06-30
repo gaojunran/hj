@@ -1,3 +1,4 @@
+mod clone;
 mod commit;
 mod config;
 mod init;
@@ -9,6 +10,7 @@ use commit::command_commit;
 use duct::cmd;
 
 use crate::{
+    clone::command_clone,
     commit::{command_amend, command_reset},
     init::command_init,
     utils::{error, hint, warning},
@@ -27,7 +29,21 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// Initialize a new jj repository.
-    Init,
+    Init {
+        /// create a GitHub repo if given
+        #[arg(short, long, alias = "gh")]
+        github: bool,
+
+        /// make the GitHub repository private if given
+        #[arg(long)]
+        private: bool,
+    },
+
+    /// Clone a repo from remote.
+    Clone {
+        /// The url, or full name of a repo ("owner/repo") to clone.
+        url_or_fullname: String,
+    },
 
     /// Create a commit
     #[command(alias = "cm")]
@@ -35,6 +51,10 @@ enum Commands {
         /// Commit message. You can omit this for now, and it will prompt you for a message after choosing what to commit.
         message: Option<String>,
     },
+
+    /// Download a repo without its version history.
+    /// Learnt from github@psnszsn/degit-rs.
+    Download { url_or_fullname: String },
 
     /// Push changes to the remote
     #[command(alias = "ps")]
@@ -86,7 +106,7 @@ fn main() {
         return;
     }
     if let Err(e) = check_gh_installed()
-        && config.default_remote_host == "github.com"
+        && config.default_host == "github.com"
         && config.check_gh
     {
         warning(&e.to_string());
@@ -98,8 +118,13 @@ fn main() {
         println!();
     }
     match &cli.command {
-        Commands::Init => {
-            if let Err(e) = command_init(&config) {
+        Commands::Init { github, private } => {
+            if let Err(e) = command_init(&config, *github, *private) {
+                error(&e.to_string());
+            }
+        }
+        Commands::Clone { url_or_fullname } => {
+            if let Err(e) = command_clone(&config, url_or_fullname) {
                 error(&e.to_string());
             }
         }
@@ -124,5 +149,6 @@ fn main() {
         Commands::Pull => {
             println!("Changes pulled.");
         }
+        Commands::Download { url_or_fullname } => todo!(),
     }
 }

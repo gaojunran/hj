@@ -26,6 +26,7 @@ export default defineConfig({
         text: 'Local Repo Actions',
         items: [
           { text: 'Initialize a repo', link: '/init' },
+          { text: 'Clone/Download a repo', link: '/clone' },
           { text: 'Commit', link: '/commit' },
         ]
       },
