@@ -1,7 +1,5 @@
-use std::{env, path::PathBuf};
-
-use duct::cmd;
 use flate2::read::GzDecoder;
+use std::{env, path::PathBuf};
 // use futures::executor::block_on;
 use indicatif::{ProgressBar, ProgressStyle};
 use regex::Regex;
