@@ -3,7 +3,11 @@ mod commit;
 mod config;
 mod download;
 mod init;
+mod pull;
+mod push;
 mod utils;
+
+use std::iter;
 
 use anyhow::anyhow;
 use clap::{Parser, Subcommand};
@@ -15,6 +19,8 @@ use crate::{
     commit::{command_amend, command_reset},
     download::command_download,
     init::command_init,
+    pull::command_pull,
+    push::command_push,
     utils::{error, hint, warning},
 };
 
@@ -59,21 +65,39 @@ enum Commands {
     #[command(aliases = ["dl", "down"])]
     Download { url_or_fullname: String },
 
+    Squash {
+        /// args that passes to `jj squash`
+        args: Vec<String>,
+    },
+
+    Split {
+        /// args that passes to `jj split`
+        args: Vec<String>,
+    },
+
     /// Push changes to the remote
     #[command(alias = "ps")]
-    Push,
+    Push {
+        branch: Vec<String>,
+
+        #[arg(short, long)]
+        keepup: bool,
+    },
 
     /// Pull changes from the remote
     #[command(alias = "pl")]
-    Pull,
+    Pull {
+        // the branch to start working on / rebase on.
+        branch: Option<String>,
+    },
 
     /// Amend the last commit
     #[command(alias = "am")]
-    Amend,
+    Amend { into: Option<String> },
 
     /// Reset the latest commit
     #[command(alias = "rs")]
-    Reset,
+    Reset { from: Option<String> },
 }
 
 fn check_jj_installed() -> anyhow::Result<()> {
@@ -136,24 +160,45 @@ fn main() {
                 error(&e.to_string());
             }
         }
-        Commands::Amend => {
-            if let Err(e) = command_amend() {
+        Commands::Amend { into } => {
+            if let Err(e) = command_amend(into.clone()) {
                 error(&e.to_string());
             }
         }
-        Commands::Reset => {
-            if let Err(e) = command_reset() {
+        Commands::Reset { from } => {
+            if let Err(e) = command_reset(from.clone()) {
                 error(&e.to_string());
             }
         }
-        Commands::Push => {
-            println!("Changes pushed.");
+        Commands::Push { branch, keepup } => {
+            if let Err(e) = command_push(&config, branch, *keepup) {
+                error(&e.to_string());
+            }
         }
-        Commands::Pull => {
-            println!("Changes pulled.");
+        Commands::Pull { branch } => {
+            if let Err(e) = command_pull(&config, branch.clone()) {
+                error(&e.to_string());
+            }
         }
         Commands::Download { url_or_fullname } => {
             if let Err(e) = command_download(&config, url_or_fullname) {
+                error(&e.to_string());
+            }
+        }
+        Commands::Split { args } => {
+            let args: Vec<&str> = iter::once("split")
+                .chain(args.iter().map(|s| s.as_str()))
+                .collect();
+            if let Err(e) = cmd("jj", args).run() {
+                error(&e.to_string());
+            }
+        }
+        Commands::Squash { args } => {
+            let args: Vec<&str> = iter::once("squash")
+                .chain(args.iter().map(String::as_str))
+                .collect();
+
+            if let Err(e) = cmd("jj", args).run() {
                 error(&e.to_string());
             }
         }

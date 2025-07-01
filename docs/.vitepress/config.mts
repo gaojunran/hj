@@ -23,11 +23,12 @@ export default defineConfig({
 
     sidebar: [
       {
-        text: 'Local Repo Actions',
+        text: 'Quick Tutorial',
         items: [
           { text: 'Initialize a repo', link: '/init' },
-          { text: 'Clone/Download a repo', link: '/clone' },
+          { text: 'Clone / Download a repo', link: '/clone' },
           { text: 'Commit', link: '/commit' },
+          { text: 'Pull / Push', link: '/pull-push' },
         ]
       },
       {

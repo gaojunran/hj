@@ -13,6 +13,7 @@
 `hj commit <message>`近似于：
 
 ```sh
+git add .  # 先将未追踪的文件添加到工作区
 git add -p
 git commit -m message
 ```
@@ -43,17 +44,19 @@ hj commit "feat: add new feature"
 
 命令会弹出一个终端交互式界面，可以在界面中选择要提交的文件。按下 `f` 键可以展开单个文件，选择具体的变更行。选择完成后，按下 `c` 键提交。
 
+:::tip 未来计划
+
+未来我们会支持向命令行参数中传入文件，而不只是交互式地选择，以支持 hj 在更广泛地场景下被使用，例如脚本。
+
+:::
+
 如果你在 `hj commit` 命令中没有给出提交描述信息，命令会认为你想先选择文件、后提供描述。选择完成后，命令会提示你输入提交描述信息。
-
-完成后，可以查看当前仓库的状态：
-
-```sh
-hj
-```
 
 :::tip
 
 为了极致的效率，大多数 hj 命令都有短缩写。 例如 `commit` 可以简写为 `cm`，`status` 可以简写为 `st`。这是我们最常用的两个缩写。
+
+未来 `hj commit` 会支持选项 `--push` 或 `-p`，将本次提交自动推送到远程。
 
 :::
 
@@ -68,6 +71,8 @@ git add -p
 git commit --amend
 ```
 
+而 `hj amend <revset>` 需要复杂的交互式变基才能实现。
+
 :::
 
 ::: details 对于熟悉 jj 的用户
@@ -75,7 +80,13 @@ git commit --amend
 `hj amend`的实质是：
 
 ```sh
-jj squash --interactive
+jj squash --interactive --from @ --into @-
+```
+
+`hj amend <revset>`的实质是：
+
+```sh
+jj squash --interactive --from @ --into <revset>
 ```
 
 事实上 `squash` 命令已经足够简单，但 `amend` 语义更加明确、功能更加单一，所以我们提供了 `amend` 命令。
@@ -90,15 +101,24 @@ hj amend
 
 同样会弹出一个交互式界面，你可以选择要提交的文件和变更行。
 
-## 撤回提交
+你也可以指定将工作副本中的一部分变更增补到任意提交中：
+
+```sh
+hj amend <revset>
+```
+
+## 删减提交
 
 ::: details 对于熟悉 git 的用户
 
 `hj reset`近似于：
 
 ```sh
-git reset --soft HEAD^
+git reset -p HEAD^  # 针对改动块
+git reset HEAD^ -- file1 file2 file3  # 针对文件
 ```
+
+而 `hj amend <revset>` 需要复杂的交互式变基才能实现。
 
 :::
 
@@ -107,10 +127,15 @@ git reset --soft HEAD^
 `hj reset`的实质是：
 
 ```sh
-jj squash --from @- --into @
+jj squash --interactive --from @- --into @
 ```
 
-这个命令将清空 `@-`，故 jj 会自动丢弃这个提交。
+`hj reset <revset>`的实质是：
+
+```sh
+jj squash --interactive --from <revset> --into @
+```
+
 
 撤回一个提交和增补一个提交一样，本质上都是将两个提交合并成一个。
 
@@ -118,20 +143,11 @@ jj squash --from @- --into @
 
 :::
 
-:::warning
 
-这是一个不稳定的 API。我还在思考如何优雅地实现这个功能。
-
-:::
-
-通常增补提交能够解决大多数提交的问题。必要的时候你也可以 **撤回提交** ，例如当你发现你错误地多提交了某些内容时：
+`reset` 操作是 `amend` 操作的逆操作，可以将一个提交的部分或全部内容撤回到工作副本中（这个提交默认是最近一次提交）：
 
 ```sh
-hj reset
+hj reset <revset>
 ```
 
-这将把 **最新一次提交**（工作副本除外）撤回，保留其更改并合并到工作副本中。换言之，撤回后当前工作副本中保存着 **原有变更** 和 **刚刚撤回的变更**、甚至包括 **被撤回提交的描述信息**。你可以继续编辑工作副本并重新提交：
-
-```sh
-hj commit
-```
+特别地，如果你撤回了一个提交的全部内容，这个提交将会被删除。
