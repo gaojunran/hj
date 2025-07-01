@@ -38,7 +38,7 @@ hj clone gaojunran/hj
 HJ_DEFAULT_HOST=gitlab.com hj clone gaojunran/hj
 ```
 
-:::tip
+:::tip 未来计划
 
 未来我们可能会提供一个 flag，如 `--host` 来指定不同的源。
 
