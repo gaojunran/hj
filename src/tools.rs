@@ -5,8 +5,8 @@ pub(crate) fn get_main_branch() -> Option<String> {
         "jj",
         "log",
         "--no-graph",
-        "-r",
-        "bookmarks()",
+        // "-r",
+        // "bookmarks()",
         "-T",
         "bookmarks ++ \"\n\""
     )

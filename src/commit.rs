@@ -16,7 +16,7 @@ pub(crate) fn command_commit(message: Option<String>) -> anyhow::Result<()> {
         let desc = Input::<String>::new()
             .with_prompt("Enter commit message")
             .interact_text()?;
-        cmd!("jj", "desc", "-r", "@-", "--message", desc).read()?;
+        cmd!("jj", "desc", "-r", "@-", "--message", desc).run()?;
     }
     Ok(())
 }
