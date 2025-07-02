@@ -28,9 +28,9 @@ pub(crate) fn command_init(config: &AppConfig, github: bool, private: bool) -> a
         )
         .read()?;
 
-        let re = Regex::new(r"https://[^\s]*?\.git").unwrap();
+        let re = Regex::new(r"https://[^\s]*").unwrap();
         if let Some(cap) = re.find(&repo_create_output) {
-            let remote_url = cap.as_str();
+            let remote_url = cap.as_str().to_string() + ".git";
             step(format!("Setting remote origin to `{remote_url}`...").as_str());
             cmd!(
                 "jj",
@@ -42,9 +42,9 @@ pub(crate) fn command_init(config: &AppConfig, github: bool, private: bool) -> a
             )
             .read()?;
         } else {
-            return Err(anyhow::anyhow!(
+            anyhow::bail!(
                 "Failed to parse remote URL. Maybe the repository was not created successfully?"
-            ));
+            );
         }
     }
     Ok(())
