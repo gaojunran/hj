@@ -17,5 +17,5 @@ pub(crate) fn warning(message: &str) {
 }
 
 pub(crate) fn step(message: &str) {
-    println!("{}{}", "🔥 ", style(message).blue().bold());
+    println!("🔥 {}", style(message).blue().bold());
 }

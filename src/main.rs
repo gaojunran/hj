@@ -5,6 +5,7 @@ mod download;
 mod init;
 mod pull;
 mod push;
+mod tools;
 mod utils;
 
 use std::iter;

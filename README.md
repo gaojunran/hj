@@ -15,16 +15,20 @@ Fast, opinionated version control experience. Powered by [jj-vcs](https://github
 MAKE **VERSION CONTROL** GREAT AGAIN!
 
 ## Planned Features
-- [ ] Clone a repo
-  - [ ] shorthand for github
+- [x] Clone a repo
+  - [x] shorthand for github
   - [ ] shorthand for your own repo (powered by gh cli)
-- [ ] Initialize a repo
-  - [ ] Create a new repo on GitHub
-  - [ ] Add remote to local repo
+- [x] Download a repo (powered by [degit-rs](https://github.com/psnszsn/degit-rs))
+- [x] Initialize a repo
+  - [x] Create a new repo on GitHub
+  - [x] Add remote to local repo
   - [x] Create a default branch
   - [ ] Download a .gitignore
 - [x] Commit Specified Files
-- [x] Amend Commit Specified Files
-- [x] Reset Last Commit
-- [ ] Push to Remote
-- [ ] Pull from Remote
+  - [ ] Commit and Push
+- [x] Amend Commit
+- [x] Reset Commit
+- [x] Push to Remote
+- [x] Pull from Remote
+
+
