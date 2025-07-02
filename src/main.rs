@@ -83,6 +83,9 @@ enum Commands {
 
         #[arg(short, long)]
         keepup: bool,
+
+        #[arg(short, long)]
+        pull: bool,
     },
 
     /// Pull changes from the remote
@@ -171,8 +174,12 @@ fn main() {
                 error(&e.to_string());
             }
         }
-        Commands::Push { branch, keepup } => {
-            if let Err(e) = command_push(&config, branch, *keepup) {
+        Commands::Push {
+            branch,
+            keepup,
+            pull,
+        } => {
+            if let Err(e) = command_push(&config, branch, *keepup, *pull) {
                 error(&e.to_string());
             }
         }

@@ -29,10 +29,12 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
 - [x] Amend Commit
 - [x] Reset Commit
 - [x] Push to Remote
+  - [ ] If no branch is specified, push the closest bookmark
   - [ ] (for a multi-worker branch) Pull before Push `--pull`
   - [ ] (for a multi-branch repo) Update trunk `--upbase`
   - [ ] `--change` and `--pr` option
 - [x] Pull from Remote
+- [ ] Update Trunk from a branch (`upbase`)
 - [ ] Starship Prompt
 - [ ] Github PR Create (other PR actions via gh cli)
 
