@@ -32,6 +32,13 @@ HJ_PUSH_CONFIG_KEEPUP=false hj push main
 
 我注意到 jj 中有一个 [PR](https://github.com/jj-vcs/jj/pull/3129) 实现了一个实验性的自动推进书签功能。当它稳定之后，我会修改 hj 的逻辑。
 
+`hj push` 的实际操作是：
+
+```sh
+jj bookmark move --from "heads(::@- & bookmarks())" --to @-
+jj git push --allow-new
+```
+
 :::
 
 进行完一些提交工作后，可以使用：
@@ -40,19 +47,25 @@ HJ_PUSH_CONFIG_KEEPUP=false hj push main
 hj push main
 ```
 
-来推送 `main` 分支到默认的 `origin` 远程。
+来推送 `main` 分支到默认的 `origin` 远程。你也可以在一个命令中执行多个被推送的分支。
+
+你甚至可以省略被推送的分支名。在这种情况下，将推送能到达当前工作副本路径上的分支：
+
+```sh
+hj push
+```
 
 :::warning
 
-在推送一个分支时，当前工作副本必须在被推送分支之上（即成为被推送书签的后代）。否则将影响 `jj` 内部书签的移动而无法推送。
+在推送分支时，当前工作副本必须在被推送分支之上（即成为被推送书签的后代）。否则将影响 `jj` 内部书签的移动而无法推送。
 
 :::
 
-:::tip 未来计划
+<!-- :::tip 未来计划
 
 未来 `hj push` 会有一个 `--pr` 选项，用于在推送后创建一个 GitHub PR。
 
-:::
+::: -->
 
 ## 拉取
 
@@ -75,7 +88,7 @@ jj 没有原生的 `jj git pull` 命令。`jj git fetch` 命令可以实现类�
 
 ```sh
 jj git fetch   # 拉取所有跟踪分支
-jj rebase -d <branch>
+jj rebase -d <branch>  # 如果不指定 branch，就没有这个操作
 ```
 
 :::
@@ -86,10 +99,32 @@ jj rebase -d <branch>
 hj pull main
 ```
 
-来拉取 `main` 分支的远程变更到本地。此命令的默认行为使得本地分支如下图所示地排列：
+来拉取 `main` 分支的远程变更到本地。此命令的默认变基行为使得本地分支如下图所示地排列：
 
 ```
 本地分支和远程分支相同的部分 
                 -> 远程分支相比本地分支新增的部分 
                                 -> 本地分支相比远程分支新增的部分
 ```
+
+如果不指定分支，执行：
+
+```sh
+hj pull
+```
+
+则只会拉取远程变更，不会执行任何变基操作。
+
+## 拉取并推送
+
+此外，还可以使用：
+
+```sh
+hj push main --pull
+```
+
+先拉取该远程分支的最新变更，再将变基后的本地分支推送到远程。
+
+## 拉取并更新当前分支的基底
+
+TODO

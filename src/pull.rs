@@ -1,6 +1,6 @@
 use duct::cmd;
 
-use crate::{config::AppConfig, utils::warning};
+use crate::{config::AppConfig, push::command_push, utils::warning};
 
 pub(crate) fn command_pull(config: &AppConfig, branch: Option<String>) -> anyhow::Result<()> {
     cmd!("jj", "git", "fetch").run()?;

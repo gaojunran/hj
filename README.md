@@ -29,8 +29,8 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
 - [x] Amend Commit
 - [x] Reset Commit
 - [x] Push to Remote
-  - [ ] If no branch is specified, push the closest bookmark
-  - [ ] (for a multi-worker branch) Pull before Push `--pull`
+  - [x] If no branch is specified, push the closest bookmark
+  - [x] (for a multi-worker branch) Pull before Push `--pull`
   - [ ] (for a multi-branch repo) Update trunk `--upbase`
   - [ ] `--change` and `--pr` option
 - [x] Pull from Remote

@@ -10,8 +10,8 @@ pub(crate) fn command_init(config: &AppConfig, github: bool, private: bool) -> a
     step(format!("Setting default branch to `{default_branch}`...").as_str());
     cmd!("jj", "bookmark", "set", "-r", "@", default_branch).read()?;
 
-    // if `create_github_repo` is true and `github` is false, what to do?
-    if config.init_config.create_github_repo || (!config.init_config.create_github_repo && github) {
+    // TODO: add a flag --no-github
+    if config.init_config.create_github_repo || github {
         step("Creating GitHub repository...");
         let dirname = std::env::current_dir()?
             .file_name()
