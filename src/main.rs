@@ -6,6 +6,7 @@ mod init;
 mod pull;
 mod push;
 mod tools;
+mod upbase;
 mod utils;
 
 use std::iter;
@@ -102,6 +103,10 @@ enum Commands {
     /// Reset the latest commit
     #[command(alias = "rs")]
     Reset { from: Option<String> },
+
+    /// Rebase branches onto the trunk
+    #[command(alias = "up")]
+    Upbase { branch: Vec<String> },
 }
 
 fn check_jj_installed() -> anyhow::Result<()> {
@@ -207,6 +212,11 @@ fn main() {
                 .collect();
 
             if let Err(e) = cmd("jj", args).run() {
+                error(&e.to_string());
+            }
+        }
+        Commands::Upbase { branch } => {
+            if let Err(e) = command_upbase(&config, branch) {
                 error(&e.to_string());
             }
         }

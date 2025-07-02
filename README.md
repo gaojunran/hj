@@ -41,6 +41,7 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
 ## Nice ideas that may be added in `hj`
 
 - [Find the closest bookmark in history to advance it forward](https://github.com/jj-vcs/jj/discussions/5568)
+- [Select all my branches with the goal of rebasing them all on the trunk](https://github.com/jj-vcs/jj/discussions/4974)
 - [`gh pr create`](https://github.com/jj-vcs/jj/discussions/6279)
 - [jj configurations](https://github.com/jj-vcs/jj/discussions/5812)
 
