@@ -25,7 +25,7 @@ pub(crate) fn command_commit(
         cmd!("jj", "desc", "-r", "@-", "--message", desc).run()?;
     }
     if push {
-        step("Pushing changes...");
+        // step("Pushing changes...");
         command_push(
             config,
             &Vec::new(), // auto select what to push
