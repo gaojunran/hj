@@ -24,11 +24,13 @@ pub(crate) fn command_commit(
             .interact_text()?;
         cmd!("jj", "desc", "-r", "@-", "--message", desc).run()?;
     }
+    // TODO: should we give more options here?
     if push {
         // step("Pushing changes...");
         command_push(
             config,
             &Vec::new(), // auto select what to push
+            &Vec::new(), // no changes should be given
             config.push_config.keepup,
             config.push_config.pull,
             config.push_config.upbase,
