@@ -1,6 +1,6 @@
 use config::{Config, ConfigError, Environment, File};
 use dirs::config_dir;
-use std::path::PathBuf;
+use std::{env, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
 
@@ -56,10 +56,15 @@ impl Default for AppConfig {
 impl AppConfig {
     pub fn from_env() -> Result<Self, ConfigError> {
         // default config location: ~/.config/hj/config.toml
-        let mut config_path = PathBuf::new();
+        let mut global_config_path = PathBuf::new();
         if let Some(mut base) = config_dir() {
             base.push("hj/config.toml");
-            config_path = base;
+            global_config_path = base;
+        }
+        let mut local_config_path = PathBuf::new();
+        if let Ok(mut base) = env::current_dir() {
+            base.push("hj.toml");
+            local_config_path = base;
         }
 
         let default = AppConfig::default();
@@ -68,7 +73,8 @@ impl AppConfig {
         let builder = Config::builder()
             // load file (if exists)
             .add_source(Config::try_from(&default)?)
-            .add_source(File::from(config_path).required(false))
+            .add_source(File::from(global_config_path).required(false))
+            .add_source(File::from(local_config_path).required(false))
             // load environment variables with prefix HJ_
             .add_source(Environment::with_prefix("HJ").separator("_"));
 
