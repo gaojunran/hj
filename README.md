@@ -25,7 +25,7 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [x] Create a default branch
   - [ ] Download a .gitignore
 - [x] Commit specified files
-  - [ ] `--push` option
+  - [x] `--push` option
 - [x] Amend changes
 - [x] Reset changes
 - [x] Push to remote

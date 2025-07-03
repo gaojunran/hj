@@ -1,7 +1,13 @@
 use dialoguer::Input;
 use duct::cmd;
 
-pub(crate) fn command_commit(message: Option<String>) -> anyhow::Result<()> {
+use crate::{config::AppConfig, push::command_push, utils::step};
+
+pub(crate) fn command_commit(
+    config: &AppConfig,
+    message: Option<String>,
+    push: bool,
+) -> anyhow::Result<()> {
     if let Some(msg) = message {
         cmd!("jj", "commit", "--interactive", "--message", msg).run()?;
     } else {
@@ -17,6 +23,16 @@ pub(crate) fn command_commit(message: Option<String>) -> anyhow::Result<()> {
             .with_prompt("Enter commit message")
             .interact_text()?;
         cmd!("jj", "desc", "-r", "@-", "--message", desc).run()?;
+    }
+    if push {
+        step("Pushing changes...");
+        command_push(
+            config,
+            &Vec::new(), // auto select what to push
+            config.push_config.keepup,
+            config.push_config.pull,
+            config.push_config.upbase,
+        )?;
     }
     Ok(())
 }

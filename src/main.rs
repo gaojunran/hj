@@ -61,6 +61,9 @@ enum Commands {
     Commit {
         /// Commit message. You can omit this for now, and it will prompt you for a message after choosing what to commit.
         message: Option<String>,
+
+        #[arg(short, long)]
+        push: bool,
     },
 
     /// Download a repo without its version history.
@@ -174,8 +177,8 @@ fn main() {
                 error(&e.to_string());
             }
         }
-        Commands::Commit { message } => {
-            if let Err(e) = command_commit(message.clone()) {
+        Commands::Commit { message, push } => {
+            if let Err(e) = command_commit(&config, message.clone(), *push) {
                 error(&e.to_string());
             }
         }
