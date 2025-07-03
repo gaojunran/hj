@@ -5,6 +5,7 @@ use crate::{config::AppConfig, pull::command_pull, upbase::command_upbase, utils
 pub(crate) fn command_push(
     config: &AppConfig,
     branch: &Vec<String>,
+    change: &Vec<String>,
     keepup: bool,
     pull: bool,
     upbase: bool,
@@ -30,6 +31,8 @@ pub(crate) fn command_push(
                 cmd!("jj", "bookmark", "set", "-r", "@-", bookmark).run()?;
             }
         }
+    } else if !change.is_empty() {
+        args.extend(change.iter().flat_map(|i| ["--change", i]));
     } else {
         step("Keepup the closest bookmark...");
         cmd!(

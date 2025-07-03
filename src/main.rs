@@ -86,6 +86,9 @@ enum Commands {
         branch: Vec<String>,
 
         #[arg(short, long)]
+        change: Vec<String>,
+
+        #[arg(short, long)]
         keepup: bool,
 
         #[arg(short, long)]
@@ -205,11 +208,12 @@ fn main() {
         }
         Commands::Push {
             branch,
+            change,
             keepup,
             pull,
             upbase,
         } => {
-            if let Err(e) = command_push(&config, branch, *keepup, *pull, *upbase) {
+            if let Err(e) = command_push(&config, branch, change, *keepup, *pull, *upbase) {
                 error(&e.to_string());
             }
         }
