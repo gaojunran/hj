@@ -69,7 +69,11 @@ enum Commands {
     /// Download a repo without its version history.
     /// Learnt from github@psnszsn/degit-rs.
     #[command(aliases = ["dl", "down"])]
-    Download { url_or_fullname: String },
+    Download {
+        url_or_fullname: String,
+        // the directory name to download the repo to.
+        name: Option<String>,
+    },
 
     // Squash {
     //     /// args that passes to `jj squash`
@@ -222,8 +226,11 @@ fn main() {
                 error(&e.to_string());
             }
         }
-        Commands::Download { url_or_fullname } => {
-            if let Err(e) = command_download(&config, url_or_fullname) {
+        Commands::Download {
+            url_or_fullname,
+            name,
+        } => {
+            if let Err(e) = command_download(&config, url_or_fullname, name.as_deref()) {
                 error(&e.to_string());
             }
         }

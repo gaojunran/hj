@@ -32,7 +32,7 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [x] If no branch specified, push the closest bookmark
   - [x] (for a multi-worker branch) Pull before Push `--pull`
   - [x] (for a multi-branch repo) Update trunk `--upbase`
-  - [ ] `--change` and `--pr` option
+  - [x] `--change` option
 - [x] Pull from Remote
 - [x] Update Trunk from a branch (`upbase`)
 - [ ] Starship Prompt

@@ -7,10 +7,14 @@ use tar::Archive;
 
 use crate::{config::AppConfig, utils::step};
 
-pub(crate) fn command_download(config: &AppConfig, url_or_fullname: &str) -> anyhow::Result<()> {
+pub(crate) fn command_download(
+    config: &AppConfig,
+    url_or_fullname: &str,
+    name: Option<&str>,
+) -> anyhow::Result<()> {
     let url =
         build_download_url(url_or_fullname).ok_or(anyhow::anyhow!("Invalid URL or fullname"))?;
-    download(&url)?;
+    download(&url, name)?;
     Ok(())
 }
 
@@ -28,7 +32,7 @@ fn build_download_url(url_or_fullname: &str) -> Option<String> {
 }
 
 /// code from https://github.com/psnszsn/degit-rs/blob/c7dbeb75131510a79400838e081b90665c654c80/src/lib.rs#L115-L180
-fn download(url: &String) -> anyhow::Result<()> {
+fn download(url: &String, name: Option<&str>) -> anyhow::Result<()> {
     // println!("{url}");
     let client = reqwest::blocking::Client::builder()
         // .user_agent("python-requests/2.32.3")
@@ -62,9 +66,15 @@ fn download(url: &String) -> anyhow::Result<()> {
     let mut archive = Archive::new(tar);
 
     let replaced = url.replace("/archive/HEAD.tar.gz", "");
-    let dirname = replaced.split('/').next_back().unwrap_or("downloaded_repo");
 
-    let dest = env::current_dir()?.join(dirname);
+    let dest = env::current_dir()?.join(if let Some(name) = name {
+        name
+    } else {
+        replaced
+            .split('/')
+            .next_back()
+            .ok_or(anyhow::anyhow!("Invalid URL"))?
+    });
 
     archive
         .entries()?
