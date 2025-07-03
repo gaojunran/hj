@@ -24,17 +24,17 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [x] Add remote to local repo
   - [x] Create a default branch
   - [ ] Download a .gitignore
-- [x] Commit Specified Files
+- [x] Commit specified files
   - [ ] `--push` option
-- [x] Amend Commit
-- [x] Reset Commit
-- [x] Push to Remote
-  - [x] If no branch is specified, push the closest bookmark
+- [x] Amend changes
+- [x] Reset changes
+- [x] Push to remote
+  - [x] If no branch specified, push the closest bookmark
   - [x] (for a multi-worker branch) Pull before Push `--pull`
-  - [ ] (for a multi-branch repo) Update trunk `--upbase`
+  - [x] (for a multi-branch repo) Update trunk `--upbase`
   - [ ] `--change` and `--pr` option
 - [x] Pull from Remote
-- [ ] Update Trunk from a branch (`upbase`)
+- [x] Update Trunk from a branch (`upbase`)
 - [ ] Starship Prompt
 - [ ] Github PR Create (other PR actions via gh cli)
 

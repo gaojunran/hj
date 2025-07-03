@@ -5,8 +5,19 @@ use crate::{
     utils::{step, warning},
 };
 
-pub(crate) fn command_upbase(config: &AppConfig, branch: Vec<String>) -> anyhow::Result<()> {
+pub(crate) fn command_upbase(
+    config: &AppConfig,
+    branch: &Vec<String>,
+    fetch: bool,
+) -> anyhow::Result<()> {
+    // we only need fetch, not pull,
+    // because we assume the trunk() has no local changes
+    if fetch || config.upbase_config.fetch {
+        step("Fetching remote changes...");
+        cmd!("jj", "git", "fetch").run()?;
+    }
     if branch.is_empty() {
+        step("Rebasing all branches onto the trunk...");
         cmd!(
             "jj",
             "rebase",

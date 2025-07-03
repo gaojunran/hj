@@ -10,6 +10,7 @@ pub struct AppConfig {
     pub default_host: String,
     pub init_config: InitConfig,
     pub push_config: PushConfig,
+    pub upbase_config: UpbaseConfig,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -23,6 +24,13 @@ pub struct InitConfig {
 pub struct PushConfig {
     /// when pushing a branch, whether to keep up the specific bookmark to `@-` or not.
     pub keepup: bool,
+    pub pull: bool,
+    pub upbase: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct UpbaseConfig {
+    pub fetch: bool,
 }
 
 impl Default for AppConfig {
@@ -35,7 +43,12 @@ impl Default for AppConfig {
                 default_branch: "main".to_string(),
                 create_github_repo: false,
             },
-            push_config: PushConfig { keepup: true },
+            push_config: PushConfig {
+                keepup: true,
+                pull: false,
+                upbase: false,
+            },
+            upbase_config: UpbaseConfig { fetch: true },
         }
     }
 }

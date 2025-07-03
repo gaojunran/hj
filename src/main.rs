@@ -23,6 +23,7 @@ use crate::{
     init::command_init,
     pull::command_pull,
     push::command_push,
+    upbase::command_upbase,
     utils::{error, hint, warning},
 };
 
@@ -87,6 +88,9 @@ enum Commands {
 
         #[arg(short, long)]
         pull: bool,
+
+        #[arg(short, long)]
+        upbase: bool,
     },
 
     /// Pull changes from the remote
@@ -106,7 +110,13 @@ enum Commands {
 
     /// Rebase branches onto the trunk
     #[command(alias = "up")]
-    Upbase { branch: Vec<String> },
+    Upbase {
+        branch: Vec<String>,
+
+        /// whether to fetch or not
+        #[arg(short, long)]
+        fetch: bool,
+    },
 }
 
 fn check_jj_installed() -> anyhow::Result<()> {
@@ -183,8 +193,9 @@ fn main() {
             branch,
             keepup,
             pull,
+            upbase,
         } => {
-            if let Err(e) = command_push(&config, branch, *keepup, *pull) {
+            if let Err(e) = command_push(&config, branch, *keepup, *pull, *upbase) {
                 error(&e.to_string());
             }
         }
@@ -215,8 +226,8 @@ fn main() {
                 error(&e.to_string());
             }
         }
-        Commands::Upbase { branch } => {
-            if let Err(e) = command_upbase(&config, branch) {
+        Commands::Upbase { branch, fetch } => {
+            if let Err(e) = command_upbase(&config, branch, *fetch) {
                 error(&e.to_string());
             }
         }
