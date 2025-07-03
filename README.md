@@ -36,7 +36,8 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
 - [x] Pull from Remote
 - [x] Update Trunk from a branch (`upbase`)
 - [ ] Starship Prompt
-- [ ] Github PR Create (other PR actions via gh cli)
+- [ ] Github PR Create
+- [ ] Remove dependency on gh cli, use api instead
 
 ## Nice ideas that may be added in `hj`
 

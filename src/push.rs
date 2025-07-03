@@ -41,7 +41,7 @@ pub(crate) fn command_push(
             "--to",
             "@-"
         )
-        .run()?;
+        .run()?; // from https://github.com/jj-vcs/jj/discussions/5568
     }
 
     // push command

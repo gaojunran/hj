@@ -9,7 +9,7 @@ mod tools;
 mod upbase;
 mod utils;
 
-use std::iter;
+use std::{env, iter};
 
 use anyhow::anyhow;
 use clap::{Parser, Subcommand};
@@ -71,16 +71,15 @@ enum Commands {
     #[command(aliases = ["dl", "down"])]
     Download { url_or_fullname: String },
 
-    Squash {
-        /// args that passes to `jj squash`
-        args: Vec<String>,
-    },
+    // Squash {
+    //     /// args that passes to `jj squash`
+    //     args: Vec<String>,
+    // },
 
-    Split {
-        /// args that passes to `jj split`
-        args: Vec<String>,
-    },
-
+    // Split {
+    //     /// args that passes to `jj split`
+    //     args: Vec<String>,
+    // },
     /// Push changes to the remote
     #[command(alias = "ps")]
     Push {
@@ -148,7 +147,6 @@ fn main() {
             hint(&format!("You can put your configuration in {}, or use environment variables prefixed with `HJ_`.", location.display()));
             std::process::exit(1)
         });
-    let cli = Cli::parse();
     if let Err(e) = check_jj_installed() {
         error(&e.to_string());
         hint("https://jj-vcs.github.io/jj/latest/install-and-setup/");
@@ -166,6 +164,19 @@ fn main() {
         hint("Set config key `check_gh` to false to disable this check.");
         println!();
     }
+    let subcommand = env::args().nth(1).unwrap_or_else(|| {
+        if let Err(e) = cmd!("jj").run() {
+            error(&e.to_string());
+        }
+        std::process::exit(0);
+    });
+    if config.fallback_commands.contains(&subcommand) {
+        if let Err(e) = cmd("jj", env::args().skip(1)).run() {
+            error(&e.to_string());
+        };
+        std::process::exit(0);
+    }
+    let cli = Cli::parse();
     match &cli.command {
         Commands::Init { github, private } => {
             if let Err(e) = command_init(&config, *github, *private) {
@@ -209,23 +220,6 @@ fn main() {
         }
         Commands::Download { url_or_fullname } => {
             if let Err(e) = command_download(&config, url_or_fullname) {
-                error(&e.to_string());
-            }
-        }
-        Commands::Split { args } => {
-            let args: Vec<&str> = iter::once("split")
-                .chain(args.iter().map(|s| s.as_str()))
-                .collect();
-            if let Err(e) = cmd("jj", args).run() {
-                error(&e.to_string());
-            }
-        }
-        Commands::Squash { args } => {
-            let args: Vec<&str> = iter::once("squash")
-                .chain(args.iter().map(String::as_str))
-                .collect();
-
-            if let Err(e) = cmd("jj", args).run() {
                 error(&e.to_string());
             }
         }
