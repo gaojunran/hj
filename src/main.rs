@@ -53,7 +53,9 @@ enum Commands {
     /// Clone a repo from remote.
     Clone {
         /// The url, or full name of a repo ("owner/repo") to clone.
-        url_or_fullname: String,
+        source: String,
+        /// The directory to clone into.
+        destination: Option<String>,
     },
 
     /// Create a commit
@@ -190,8 +192,11 @@ fn main() {
                 error(&e.to_string());
             }
         }
-        Commands::Clone { url_or_fullname } => {
-            if let Err(e) = command_clone(&config, url_or_fullname) {
+        Commands::Clone {
+            source,
+            destination,
+        } => {
+            if let Err(e) = command_clone(&config, source, destination.as_deref()) {
                 error(&e.to_string());
             }
         }

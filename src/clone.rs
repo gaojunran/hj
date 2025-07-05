@@ -3,10 +3,14 @@ use regex::Regex;
 
 use crate::config::AppConfig;
 
-pub(crate) fn command_clone(config: &AppConfig, url_or_fullname: &str) -> anyhow::Result<()> {
-    let url = build_url(&config.default_host, url_or_fullname)
+pub(crate) fn command_clone(
+    config: &AppConfig,
+    source: &str,
+    destination: Option<&str>,
+) -> anyhow::Result<()> {
+    let url = build_url(&config.default_host, source)
         .ok_or(anyhow::anyhow!("Invalid URL or fullname"))?;
-    cmd!("jj", "git", "clone", &url).run()?;
+    cmd!("jj", "git", "clone", &url, destination.unwrap_or("")).run()?;
     Ok(())
 }
 
