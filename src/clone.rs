@@ -10,7 +10,11 @@ pub(crate) fn command_clone(
 ) -> anyhow::Result<()> {
     let url = build_url(&config.default_host, source)
         .ok_or(anyhow::anyhow!("Invalid URL or fullname"))?;
-    cmd!("jj", "git", "clone", &url, destination.unwrap_or("")).run()?;
+    let mut args = vec!["git", "clone", &url];
+    if let Some(destination) = destination {
+        args.push(destination);
+    }
+    cmd("jj", args).run()?;
     Ok(())
 }
 
