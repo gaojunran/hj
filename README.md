@@ -26,6 +26,7 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [ ] Download a .gitignore
 - [x] Commit specified files
   - [x] `--push` option
+  - [ ] Experimental config: allow array message input
 - [x] Amend changes
 - [x] Reset changes
 - [x] Push to remote
@@ -36,8 +37,12 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
 - [x] Pull from Remote
 - [x] Update Trunk from a branch (`upbase`)
 - [ ] Starship Prompt
-- [ ] Github PR Create
+- [ ] GitHub PR Create
 - [ ] Remove dependency on gh cli, use api instead
+- [ ] Consider co-locate with git, to get highest IDE / git-tool compatibility
+  - [ ] `clone --colocate`
+  - [ ] `init --colocate`
+  - [ ] colocate as a default config
 
 ## Nice ideas that may be added in `hj`
 
