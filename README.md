@@ -43,6 +43,7 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [ ] `clone --colocate`
   - [ ] `init --colocate`
   - [ ] colocate as a default config
+- [ ] Publish document
 
 ## Nice ideas that may be added in `hj`
 
