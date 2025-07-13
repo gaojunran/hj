@@ -19,6 +19,7 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [x] shorthand for github
   - [ ] shorthand for your own github repo (powered by gh cli)
 - [x] Download a repo (powered by [degit-rs](https://github.com/psnszsn/degit-rs))
+  - [ ] Rename arguments to `src` and `dst`
 - [x] Initialize a repo
   - [x] Create a new repo on GitHub
   - [x] Add remote to local repo
@@ -43,6 +44,10 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [ ] `clone --colocate`
   - [ ] `init --colocate`
   - [ ] colocate as a default config
+- [ ] Record repos that managed by hj, and launch selector if there's no `.jj` in cwd. (?)
+- [ ] Make `hj keepup` independent
+- [ ] `hj switch`: `keepup` and `new`, useful for colocation
+- [ ] `hj all`: same as `hj log -r "all()"`
 - [ ] Publish document
 
 ## Nice ideas that may be added in `hj`

@@ -12,6 +12,7 @@ pub struct AppConfig {
     pub init_config: InitConfig,
     pub push_config: PushConfig,
     pub upbase_config: UpbaseConfig,
+    pub switch_config: SwitchConfig,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -32,6 +33,11 @@ pub struct PushConfig {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct UpbaseConfig {
     pub fetch: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SwitchConfig {
+    pub keepup: bool,
 }
 
 impl Default for AppConfig {
@@ -95,6 +101,7 @@ impl Default for AppConfig {
                 pull: false,
                 upbase: false,
             },
+            switch_config: SwitchConfig { keepup: true },
             upbase_config: UpbaseConfig { fetch: true },
         }
     }
