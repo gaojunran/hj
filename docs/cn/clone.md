@@ -4,13 +4,13 @@
 
 ::: details 对于熟悉 git 的用户
 
-`hj clone` 近似于 `git clone`，但允许你使用仓库全名（`owner/repo`）来克隆 GitHub 上的仓库。
+`hj clone` 近似于 `git clone`，但允许你使用仓库全名（`owner/repo`）而不是 URL 来克隆 GitHub 上的仓库。
 
 :::
 
 ::: details 对于熟悉 jj 的用户
 
-`hj clone` 近似于 `jj git clone`，但允许你使用仓库全名（`owner/repo`）来克隆 GitHub 上的仓库。
+`hj clone` 近似于 `jj git clone`，但允许你使用仓库全名（`owner/repo`）而不是 URL 来克隆 GitHub 上的仓库。
 
 相比于 `git clone`，`jj` 有清晰的进度条来查看进度。
 
@@ -46,6 +46,14 @@ HJ_DEFAULT_HOST=gitlab.com hj clone gaojunran/hj
 
 :::
 
+也可以指定克隆得到的文件夹路径。默认是远程仓库的名字。如果你这样运行：
+
+```sh
+hj clone gaojunran/hj .  # 关注最后的 . 表示当前文件夹
+```
+
+那么仓库内容将被克隆在当前文件夹内，而不是新建一个文件夹。
+
 ## 下载仓库
 
 很多情况下我们使用 GitHub 上的仓库，并不需要其历史版本，例如：
@@ -60,13 +68,17 @@ HJ_DEFAULT_HOST=gitlab.com hj clone gaojunran/hj
 hj download gaojunran/hj
 ```
 
-它将从 GitHub 上下载仓库的最新代码快照（不含版本控制），并解压到当前目录下。这比克隆仓库要快得多！
+它将从 GitHub 上下载仓库的最新代码快照（不含版本控制），并解压到一个文件夹中。这比克隆仓库要快得多！
 
 :::details
 
 此部分功能实现借鉴自 [degit-rs](https://github.com/psnszsn/degit-rs)。
 
-一个较大的不同是，[degit](https://github.com/Rich-Harris/degit)、[tiged](https://github.com/tiged/tiged) 及 [degit-rs](https://github.com/psnszsn/degit-rs) 均是将代码克隆在一个空文件夹中，而 `hj download` 则是将代码解压到当前目录的一个新文件夹下，与 `hj clone` 保持一致。
+一个较大的不同是，[degit](https://github.com/Rich-Harris/degit)、[tiged](https://github.com/tiged/tiged) 及 [degit-rs](https://github.com/psnszsn/degit-rs) 均是将代码克隆在当前目录中（且要求这个文件夹必须为空），而 `hj download` 默认是将代码解压到当前目录的一个新文件夹下，与 `hj clone` 保持一致。和 `hj clone` 一样，你也可以指定具体路径（名字），例如：
+
+```sh
+hj download vuejs/core vue  # 如果不指定名字，默认名为仓库名，即 core
+```
 
 :::
 

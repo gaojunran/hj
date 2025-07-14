@@ -124,3 +124,74 @@ hj push main --pull
 ```
 
 先拉取该远程分支的最新变更，再将变基后的本地分支推送到远程。
+
+## 更新主干
+
+::: details 对于熟悉 git 的用户
+
+`hj upbase featA` 大致相当于：
+
+```sh
+git checkout main
+git pull --rebase
+git checkout featA
+git rebase main
+```
+
+这个操作流程中省略了确保工作目录干净的步骤。git 的恼人之处之一在于，执行切换分支或变基操作时，经常需要你确保工作目录干净，你经常要与 `stash` 打交道。
+
+而对于 `hj upbase`（更新所有基于主分支的分支），git 需要非常复杂的脚本来支持。
+
+:::
+
+::: details 对于熟悉 jj 的用户
+
+`hj upbase` 的实际操作是：
+
+```sh
+jj git fetch   # 可以通过 upbase_config.fetch 配置项禁用
+jj rebase -d "trunk()" -s "all:(::trunk())+ & mutable()"
+```
+
+`hj upbase featA featB` 的实际操作是：
+
+```sh
+jj git fetch   # 可以通过 upbase_config.fetch 配置项禁用
+jj rebase -d "trunk()" -s featA
+jj rebase -d "trunk()" -s featB
+```
+
+:::
+
+
+假设一个工作场景：你在基于主分支 `main` 的一个分支 `feature-A` 上工作，在你发起 PR 之前，`main` 分支更新了。
+
+此时的一个推荐做法是将你的分支更新到基于 **最新 `main` 分支** 的状态，再发起 PR：
+
+```sh
+hj upbase
+```
+
+这将更新所有基于主分支的分支。你也可以指定要更新的分支：
+
+```sh
+hj upbase featA featB
+```
+
+:::tip
+
+如果你不在本地处理这些冲突，PR 创建后合并会失败，CI/CD 可能会失败，合并按钮会被禁用。
+
+通过在本地提前合并/rebase，你可以 在发 PR 之前就解决冲突，减少 reviewer 的负担。
+
+:::
+
+这个 `upbase` 操作往往是在推送前进行的，因此 `hj push` 命令也支持 `--upbase` 选项。
+
+:::tip 未来计划
+
+你是否需要一个 `sync` 命令，在单个操作中同步你的所有分支（至少是单向的）？
+
+未来 `hj sync` 可能会实现这个功能。
+
+:::

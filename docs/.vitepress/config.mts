@@ -14,6 +14,9 @@ export default defineConfig({
       lang: 'zh-CN',
     }
   },
+  markdown: {
+    theme: 'red'
+  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
