@@ -29,6 +29,7 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [x] `--push` option
   - [ ] Experimental config: allow array message input
 - [x] Amend changes
+  - [ ] `--force`: `--ignore-immutable`
 - [x] Reset changes
 - [x] Push to remote
   - [x] If no branch specified, push the closest bookmark
@@ -43,10 +44,11 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
 - [ ] Consider co-locate with git, to get highest IDE / git-tool compatibility
   - [ ] `clone --colocate`
   - [ ] `init --colocate`
-  - [ ] colocate as a default config
+  - [ ] config: check git or not
+  - [ ] config: use colocate by default or not
 - [ ] Record repos that managed by hj, and launch selector if there's no `.jj` in cwd. (?)
-- [ ] Make `hj keepup` independent
-- [ ] `hj switch`: `keepup` and `new`, useful for colocation
+- [x] Make `hj keepup` independent
+- [ ] `hj switch`: `hj keepup`, `hj new` and `git switch`, useful for colocation
 - [ ] `hj all`: same as `hj log -r "all()"`
 - [ ] Publish document
 

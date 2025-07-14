@@ -3,6 +3,7 @@ mod commit;
 mod config;
 mod download;
 mod init;
+mod keepup;
 mod pull;
 mod push;
 mod tools;
@@ -21,6 +22,7 @@ use crate::{
     commit::{command_amend, command_reset},
     download::command_download,
     init::command_init,
+    keepup::command_keepup,
     pull::command_pull,
     push::command_push,
     upbase::command_upbase,
@@ -77,15 +79,6 @@ enum Commands {
         name: Option<String>,
     },
 
-    // Squash {
-    //     /// args that passes to `jj squash`
-    //     args: Vec<String>,
-    // },
-
-    // Split {
-    //     /// args that passes to `jj split`
-    //     args: Vec<String>,
-    // },
     /// Push changes to the remote
     #[command(alias = "ps")]
     Push {
@@ -128,6 +121,11 @@ enum Commands {
         #[arg(short, long)]
         fetch: bool,
     },
+
+    /// Keepup bookmark(s) to the latest commit
+    /// It should run internally in `push` or `switch` commands
+    #[command(aliases = ["tug", "k"])]
+    Keepup { branch: Vec<String> },
 }
 
 fn check_jj_installed() -> anyhow::Result<()> {
@@ -241,6 +239,11 @@ fn main() {
         }
         Commands::Upbase { branch, fetch } => {
             if let Err(e) = command_upbase(&config, branch, *fetch) {
+                error(&e.to_string());
+            }
+        }
+        Commands::Keepup { branch } => {
+            if let Err(e) = command_keepup(&config, branch) {
                 error(&e.to_string());
             }
         }

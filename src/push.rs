@@ -1,6 +1,9 @@
 use duct::cmd;
 
-use crate::{config::AppConfig, pull::command_pull, upbase::command_upbase, utils::step};
+use crate::{
+    config::AppConfig, keepup::command_keepup, pull::command_pull, upbase::command_upbase,
+    utils::step,
+};
 
 pub(crate) fn command_push(
     config: &AppConfig,
@@ -18,33 +21,23 @@ pub(crate) fn command_push(
         step(format!("Pulling {branch} before pushing...").as_str());
         command_pull(config, Some(branch.to_string()))?;
     }
+
     if upbase {
         step("Upbase before pushing...");
         command_upbase(config, branch, !pull)?; // if pull is true, then fetch is not needed
     }
+
     let mut args = vec!["git", "push", "--allow-new"];
     if !branch.is_empty() {
         args.extend(branch.iter().flat_map(|i| ["--bookmark", i]));
-        if config.push_config.keepup || keepup {
-            for bookmark in branch {
-                step(format!("Keepup bookmark `{bookmark}`...").as_str());
-                cmd!("jj", "bookmark", "set", "-r", "@-", bookmark).run()?;
-            }
-        }
     } else if !change.is_empty() {
         args.extend(change.iter().flat_map(|i| ["--change", i]));
-    } else {
-        step("Keepup the closest bookmark...");
-        cmd!(
-            "jj",
-            "bookmark",
-            "move",
-            "--from",
-            "heads(::@- & bookmarks())",
-            "--to",
-            "@-"
-        )
-        .run()?; // from https://github.com/jj-vcs/jj/discussions/5568
+    }
+
+    // keepup if needed
+    if config.push_config.keepup || keepup {
+        step("Keepup bookmark(s)...");
+        command_keepup(config, branch)?;
     }
 
     // push command
