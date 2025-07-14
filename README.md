@@ -61,3 +61,8 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
 - [`gh pr create`](https://github.com/jj-vcs/jj/discussions/6279)
 - [jj configurations](https://github.com/jj-vcs/jj/discussions/5812)
 
+## Now you can try hj ...
+
+```bash
+cargo install --path .
+```
