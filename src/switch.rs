@@ -1,6 +1,6 @@
 use duct::cmd;
 
-use crate::{config::AppConfig, keepup::command_keepup};
+use crate::{check_git_installed, config::AppConfig, keepup::command_keepup};
 
 pub(crate) fn command_switch(
     config: &AppConfig,
@@ -13,6 +13,7 @@ pub(crate) fn command_switch(
     }
     cmd!("jj", "new", &branch).run()?;
     if git {
+        check_git_installed()?;
         cmd!("git", "checkout", &branch).run()?;
     }
     Ok(())

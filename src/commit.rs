@@ -39,7 +39,7 @@ pub(crate) fn command_commit(
     Ok(())
 }
 
-pub(crate) fn command_amend(into: Option<String>) -> anyhow::Result<()> {
+pub(crate) fn command_amend(into: Option<String>, force: bool) -> anyhow::Result<()> {
     cmd!(
         "jj",
         "squash",
@@ -51,13 +51,14 @@ pub(crate) fn command_amend(into: Option<String>) -> anyhow::Result<()> {
             into
         } else {
             "@-".to_string()
-        }
+        },
+        if force { "--ignore-immutable" } else { "" }
     )
     .run()?;
     Ok(())
 }
 
-pub(crate) fn command_reset(from: Option<String>) -> anyhow::Result<()> {
+pub(crate) fn command_reset(from: Option<String>, force: bool) -> anyhow::Result<()> {
     cmd!(
         "jj",
         "squash",
@@ -69,7 +70,8 @@ pub(crate) fn command_reset(from: Option<String>) -> anyhow::Result<()> {
             "@-".to_string()
         },
         "--into",
-        "@"
+        "@",
+        if force { "--ignore-immutable" } else { "" }
     )
     .run()?;
     Ok(())

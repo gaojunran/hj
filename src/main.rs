@@ -58,7 +58,7 @@ enum Commands {
     Clone {
         /// The url, or full name of a repo ("owner/repo") to clone.
         source: String,
-        /// The directory to clone into.
+        /// The directory to clone into. By default is ./<repo-name>.
         destination: Option<String>,
     },
 
@@ -76,9 +76,10 @@ enum Commands {
     /// Learnt from github@psnszsn/degit-rs.
     #[command(aliases = ["dl", "down"])]
     Download {
-        url_or_fullname: String,
-        // the directory name to download the repo to.
-        name: Option<String>,
+        // The url or full name of a repo ("owner/repo") to download.
+        source: String,
+        // path to download the repo to. By default is ./<repo-name>.
+        destination: Option<String>,
     },
 
     /// Push changes to the remote
@@ -108,11 +109,19 @@ enum Commands {
 
     /// Amend the last commit
     #[command(alias = "am")]
-    Amend { into: Option<String> },
+    Amend {
+        into: Option<String>,
+        #[arg(short, long)]
+        force: bool,
+    },
 
     /// Reset the latest commit
     #[command(alias = "rs")]
-    Reset { from: Option<String> },
+    Reset {
+        from: Option<String>,
+        #[arg(short, long)]
+        force: bool,
+    },
 
     /// Rebase branches onto the trunk
     #[command(alias = "up")]
@@ -157,7 +166,7 @@ fn check_gh_installed() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn check_git_installed() -> anyhow::Result<()> {
+pub(crate) fn check_git_installed() -> anyhow::Result<()> {
     if cmd!("git", "--version").read().is_err() {
         return Err(anyhow!(
             "git is not installed or not found in PATH. Please install git first."
@@ -233,13 +242,13 @@ fn main() {
                 error(&e.to_string());
             }
         }
-        Commands::Amend { into } => {
-            if let Err(e) = command_amend(into.clone()) {
+        Commands::Amend { into, force } => {
+            if let Err(e) = command_amend(into.clone(), *force) {
                 error(&e.to_string());
             }
         }
-        Commands::Reset { from } => {
-            if let Err(e) = command_reset(from.clone()) {
+        Commands::Reset { from, force } => {
+            if let Err(e) = command_reset(from.clone(), *force) {
                 error(&e.to_string());
             }
         }
@@ -260,10 +269,10 @@ fn main() {
             }
         }
         Commands::Download {
-            url_or_fullname,
-            name,
+            source,
+            destination,
         } => {
-            if let Err(e) = command_download(&config, url_or_fullname, name.as_deref()) {
+            if let Err(e) = command_download(&config, source, destination.as_deref()) {
                 error(&e.to_string());
             }
         }

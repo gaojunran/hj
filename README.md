@@ -19,7 +19,6 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [x] shorthand for github
   - [ ] shorthand for your own github repo (powered by gh cli)
 - [x] Download a repo (powered by [degit-rs](https://github.com/psnszsn/degit-rs))
-  - [ ] Rename arguments to `src` and `dst`
 - [x] Initialize a repo
   - [x] Create a new repo on GitHub
   - [x] Add remote to local repo
@@ -29,7 +28,7 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [x] `--push` option
   - [ ] Experimental config: allow array message input
 - [x] Amend changes
-  - [ ] `--force`: `--ignore-immutable`
+  - [x] `--force`: `--ignore-immutable`
 - [x] Reset changes
 - [x] Push to remote
   - [x] If no branch specified, push the closest bookmark
@@ -40,7 +39,6 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
 - [x] Update Trunk from a branch (`upbase`)
 - [ ] Starship Prompt
 - [ ] GitHub PR Create (?)
-- [ ] Remove dependency on gh cli, use api instead
 - [ ] Consider co-locate with git, to get highest IDE / git-tool compatibility
   - [ ] `clone --colocate`
   - [ ] `init --colocate`
@@ -48,10 +46,13 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [ ] config: use colocate by default or not
 - [ ] Record repos that managed by hj, and launch selector if there's no `.jj` in cwd. (?)
 - [x] Make `hj keepup` independent
+  - [ ] closest pushable: [discussion](https://github.com/jj-vcs/jj/discussions/5568#discussioncomment-13007551) 
 - [x] `hj switch`: `hj keepup`, `hj new` and `git switch`, useful for colocation
   - [x] allow shortcuts: `hj main` for `hj switch main`
 - [ ] `hj all`: same as `hj log -r "all()"`
 - [ ] Publish document
+
+- [ ] Remove dependency on gh cli, use api instead
 
 ## Nice ideas that may be added in `hj`
 
