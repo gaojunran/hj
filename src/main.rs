@@ -6,11 +6,12 @@ mod init;
 mod keepup;
 mod pull;
 mod push;
+mod switch;
 mod tools;
 mod upbase;
 mod utils;
 
-use std::{env, iter};
+use std::env;
 
 use anyhow::anyhow;
 use clap::{Parser, Subcommand};
@@ -25,6 +26,7 @@ use crate::{
     keepup::command_keepup,
     pull::command_pull,
     push::command_push,
+    switch::command_switch,
     upbase::command_upbase,
     utils::{error, hint, warning},
 };
@@ -41,7 +43,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Initialize a new jj repository.
+    /// Start version control experience!
     Init {
         /// create a GitHub repo if given
         #[arg(short, long, alias = "gh")]
@@ -122,10 +124,19 @@ enum Commands {
         fetch: bool,
     },
 
-    /// Keepup bookmark(s) to the latest commit
+    /// Keepup bookmark(s) to the latest commit.
     /// It should run internally in `push` or `switch` commands
     #[command(aliases = ["tug", "k"])]
     Keepup { branch: Vec<String> },
+
+    /// Switch to a branch
+    #[command(alias = "sw")]
+    Switch {
+        branch: String,
+        /// whether to keepup or not
+        #[arg(short, long)]
+        keepup: bool,
+    },
 }
 
 fn check_jj_installed() -> anyhow::Result<()> {
@@ -144,6 +155,19 @@ fn check_gh_installed() -> anyhow::Result<()> {
         ));
     }
     Ok(())
+}
+
+fn check_git_installed() -> anyhow::Result<()> {
+    if cmd!("git", "--version").read().is_err() {
+        return Err(anyhow!(
+            "git is not installed or not found in PATH. Please install git first."
+        ));
+    }
+    Ok(())
+}
+
+fn check_dot_git() -> bool {
+    std::path::Path::new(".git").exists()
 }
 
 fn main() {
@@ -181,6 +205,12 @@ fn main() {
         if let Err(e) = cmd("jj", env::args().skip(1)).run() {
             error(&e.to_string());
         };
+        std::process::exit(0);
+    }
+    if config.shortcut_branches.contains(&subcommand) {
+        if let Err(e) = command_switch(&config, subcommand, true, check_dot_git()) {
+            error(&e.to_string());
+        }
         std::process::exit(0);
     }
     let cli = Cli::parse();
@@ -244,6 +274,11 @@ fn main() {
         }
         Commands::Keepup { branch } => {
             if let Err(e) = command_keepup(&config, branch) {
+                error(&e.to_string());
+            }
+        }
+        Commands::Switch { branch, keepup } => {
+            if let Err(e) = command_switch(&config, branch.clone(), *keepup, check_dot_git()) {
                 error(&e.to_string());
             }
         }

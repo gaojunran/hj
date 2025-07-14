@@ -39,7 +39,7 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
 - [x] Pull from Remote
 - [x] Update Trunk from a branch (`upbase`)
 - [ ] Starship Prompt
-- [ ] GitHub PR Create
+- [ ] GitHub PR Create (?)
 - [ ] Remove dependency on gh cli, use api instead
 - [ ] Consider co-locate with git, to get highest IDE / git-tool compatibility
   - [ ] `clone --colocate`
@@ -48,7 +48,8 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [ ] config: use colocate by default or not
 - [ ] Record repos that managed by hj, and launch selector if there's no `.jj` in cwd. (?)
 - [x] Make `hj keepup` independent
-- [ ] `hj switch`: `hj keepup`, `hj new` and `git switch`, useful for colocation
+- [x] `hj switch`: `hj keepup`, `hj new` and `git switch`, useful for colocation
+  - [x] allow shortcuts: `hj main` for `hj switch main`
 - [ ] `hj all`: same as `hj log -r "all()"`
 - [ ] Publish document
 

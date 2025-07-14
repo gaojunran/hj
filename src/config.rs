@@ -9,6 +9,7 @@ pub struct AppConfig {
     pub check_gh: bool,
     pub default_host: String,
     pub fallback_commands: Vec<String>,
+    pub shortcut_branches: Vec<String>,
     pub init_config: InitConfig,
     pub push_config: PushConfig,
     pub upbase_config: UpbaseConfig,
@@ -45,7 +46,7 @@ impl Default for AppConfig {
         AppConfig {
             check_gh: true,
             default_host: "github.com".to_string(),
-            fallback_commands: vec![
+            fallback_commands: [
                 "abandon",
                 "absorb",
                 "backout",
@@ -91,6 +92,10 @@ impl Default for AppConfig {
             .iter()
             .map(|item| item.to_string())
             .collect(),
+            shortcut_branches: ["main", "master", "trunk", "dev"]
+                .iter()
+                .map(|item| item.to_string())
+                .collect(),
             init_config: InitConfig {
                 default_remote_name: "origin".to_string(),
                 default_branch: "main".to_string(),
