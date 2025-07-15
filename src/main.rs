@@ -45,11 +45,11 @@ struct Cli {
 enum Commands {
     /// Start version control experience!
     Init {
-        /// create a GitHub repo if given
+        /// Create a GitHub repo if given. You should have `gh` installed and logged in.
         #[arg(short, long, alias = "gh")]
         github: bool,
 
-        /// make the GitHub repository private if given
+        /// Make the GitHub repository private if given
         #[arg(long)]
         private: bool,
     },
@@ -62,68 +62,75 @@ enum Commands {
         destination: Option<String>,
     },
 
-    /// Create a commit
+    /// Create a commit.
     #[command(alias = "cm")]
     Commit {
-        /// Commit message. You can omit this for now, and it will prompt you for a message after choosing what to commit.
+        /// Commit message. You can omit this for now, and it will prompt you for a message later.
         message: Option<String>,
 
+        /// Run `hj push` after committing.
         #[arg(short, long)]
         push: bool,
     },
 
     /// Download a repo without its version history.
-    /// Learnt from github@psnszsn/degit-rs.
     #[command(aliases = ["dl", "down"])]
     Download {
-        // The url or full name of a repo ("owner/repo") to download.
+        /// The url, or full name of a repo ("owner/repo") to download.
         source: String,
-        // path to download the repo to. By default is ./<repo-name>.
+        /// Path to download the repo to. By default is `./<repo-name>`.
         destination: Option<String>,
     },
 
     /// Push changes to the remote
     #[command(alias = "ps")]
     Push {
+        /// The branches to push to. If not given, push the current branch (closest bookmark).
         branch: Vec<String>,
 
+        /// Give revsets of changes to push. It will name the branch automatically.
         #[arg(short, long)]
         change: Vec<String>,
 
+        /// Whether to keepup or not. (by default true)
         #[arg(short, long)]
         keepup: bool,
 
+        /// Whether to pull before pushing. If given, the argument `branch` only accepts SINGLE branch.
         #[arg(short, long)]
         pull: bool,
 
+        /// Whether to upbase before pushing.
         #[arg(short, long)]
         upbase: bool,
     },
 
-    /// Pull changes from the remote
+    /// Pull changes from the remote.
     #[command(alias = "pl")]
     Pull {
-        // the branch to start working on / rebase on.
+        // Specify where our new work will be based on. Skip rebasing if not given.
         branch: Option<String>,
     },
 
-    /// Amend the last commit
+    /// Amend from working copy to a commit (by default the latest one).
     #[command(alias = "am")]
     Amend {
         into: Option<String>,
+        /// force amend (allow mutate the immutable commit)
         #[arg(short, long)]
         force: bool,
     },
 
-    /// Reset the latest commit
+    /// Reset from a commit (by default the latest one) to working copy.
     #[command(alias = "rs")]
     Reset {
         from: Option<String>,
+        /// force reset (allow mutate the immutable commit)
         #[arg(short, long)]
         force: bool,
     },
 
-    /// Rebase branches onto the trunk
+    /// Rebase branches onto the trunk, which means updating the trunk and make all the other branches based on the NEW trunk.
     #[command(alias = "up")]
     Upbase {
         branch: Vec<String>,
@@ -133,12 +140,13 @@ enum Commands {
         fetch: bool,
     },
 
-    /// Keepup bookmark(s) to the latest commit.
-    /// It should run internally in `push` or `switch` commands
+    /// Keepup bookmarks to the latest commit.
+    /// Often it runs internally in `push` or `switch` commands.
+    /// If you move the working copy, it should be run manually.
     #[command(aliases = ["tug", "k"])]
     Keepup { branch: Vec<String> },
 
-    /// Switch to a branch
+    /// Switch to a branch.
     #[command(alias = "sw")]
     Switch {
         branch: String,
