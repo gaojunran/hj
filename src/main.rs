@@ -4,6 +4,7 @@ mod config;
 mod download;
 mod init;
 mod keepup;
+mod log;
 mod pull;
 mod push;
 mod switch;
@@ -24,6 +25,7 @@ use crate::{
     download::command_download,
     init::command_init,
     keepup::command_keepup,
+    log::command_logall,
     pull::command_pull,
     push::command_push,
     switch::command_switch,
@@ -154,6 +156,10 @@ enum Commands {
         #[arg(short, long)]
         keepup: bool,
     },
+
+    /// Log all commits.
+    #[command(aliases = ["lg", "all"])]
+    LogAll,
 }
 
 fn check_jj_installed() -> anyhow::Result<()> {
@@ -296,6 +302,11 @@ fn main() {
         }
         Commands::Switch { branch, keepup } => {
             if let Err(e) = command_switch(&config, branch.clone(), *keepup, check_dot_git()) {
+                error(&e.to_string());
+            }
+        }
+        Commands::LogAll => {
+            if let Err(e) = command_logall(&config) {
                 error(&e.to_string());
             }
         }
