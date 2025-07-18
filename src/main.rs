@@ -25,7 +25,7 @@ use crate::{
     download::command_download,
     init::command_init,
     keepup::command_keepup,
-    log::command_logall,
+    log::command_log_all,
     pull::command_pull,
     push::command_push,
     switch::command_switch,
@@ -306,7 +306,7 @@ fn main() {
             }
         }
         Commands::LogAll => {
-            if let Err(e) = command_logall(&config) {
+            if let Err(e) = command_log_all(&config) {
                 error(&e.to_string());
             }
         }

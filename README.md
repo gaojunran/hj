@@ -37,7 +37,6 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [x] `--change` option
 - [x] Pull from Remote
 - [x] Update Trunk from a branch (`upbase`)
-- [ ] Starship Prompt
 - [ ] GitHub PR Create (?)
 - [ ] Consider co-locate with git, to get highest IDE / git-tool compatibility
   - [ ] `clone --colocate`
@@ -49,7 +48,9 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [ ] closest pushable: [discussion](https://github.com/jj-vcs/jj/discussions/5568#discussioncomment-13007551) 
 - [x] `hj switch`: `hj keepup`, `hj new` and `git switch`, useful for colocation
   - [x] allow shortcuts: `hj main` for `hj switch main`
-- [ ] `hj all`: same as `hj log -r "all()"`
+- [x] `hj all`: same as `hj log -r "all()"`
+  - [ ] Other log commands, TBD
+- [ ] `hj rollback`: interactive rollback, using skim
 - [ ] Publish document
 
 - [ ] Remove dependency on gh cli, use api instead

@@ -27,6 +27,7 @@ pub(crate) fn command_upbase(
             "all:(::trunk())+ & mutable()"
         )
         .run()?; // from https://github.com/jj-vcs/jj/discussions/4974
+    // FIXME: https://github.com/jj-vcs/jj/discussions/5812#discussioncomment-13095720
     } else {
         for b in branch {
             step(format!("Rebase branch {b} onto the trunk...").as_str());
