@@ -54,6 +54,7 @@ impl Default for AppConfig {
                 "config",
                 "debug",
                 "describe",
+                "desc", // describe
                 "diff",
                 "diffedit",
                 "duplicate",
@@ -82,6 +83,7 @@ impl Default for AppConfig {
                 "split",
                 "squash",
                 "status",
+                "st", // status
                 "tag",
                 "undo",
                 "unsign",
