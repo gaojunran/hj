@@ -37,7 +37,7 @@ pub(crate) fn command_download(
     headers.insert(USER_AGENT, HeaderValue::from_static("rust-client"));
 
     if let Ok(token) = std::env::var("GITHUB_TOKEN") {
-        let value = format!("token {}", token);
+        let value = format!("token {token}");
         headers.insert(
             AUTHORIZATION,
             HeaderValue::from_str(&value).expect("Invalid GITHUB_TOKEN"),
@@ -128,7 +128,10 @@ fn parse_repo(input: &str) -> Option<(String, String)> {
     {
         let parts: Vec<&str> = stripped.split('/').collect();
         if parts.len() >= 3 && parts[0].ends_with(".com") {
-            return Some((parts[1].to_string(), parts[2].to_string()));
+            return Some((
+                parts[1].to_string(),
+                parts[2].to_string().replace(".git", ""),
+            ));
         }
     } else {
         let parts: Vec<&str> = input.split('/').collect();

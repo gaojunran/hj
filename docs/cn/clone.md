@@ -46,7 +46,9 @@ HJ_DEFAULT_HOST=gitlab.com hj clone gaojunran/hj
 
 :::
 
-也可以指定克隆得到的文件夹路径。默认是远程仓库的名字。如果你这样运行：
+---
+
+也可以指定目标文件夹路径。默认是远程仓库的名字。如果你这样运行：
 
 ```sh
 hj clone gaojunran/hj .  # 关注最后的 . 表示当前文件夹
@@ -79,6 +81,10 @@ hj download gaojunran/hj
 ```sh
 hj download vuejs/core vue  # 如果不指定名字，默认名为仓库名，即 core
 ```
+
+:::
+
+---
 
 你还可以从一个仓库中下载指定的文件或文件夹，例如：
 

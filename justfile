@@ -24,5 +24,11 @@ fmt:
 test:
   cargo test
 
+# =======================================
+
 install:
   cargo install --path .
+
+doc:
+  cd docs
+  pnpm run docs:dev
