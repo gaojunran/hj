@@ -6,10 +6,9 @@ Fast, opinionated version control experience. Powered by [jj-vcs](https://github
 
 ## Goals
 
-- Most of jj actions can be done with a single command, with reasonable default arguments.
-- Try my best to make jj compatible with git remote actions (pull, push, ...). Some bookmark actions are annoying, I make them implicit.
+- Most actions (commit, push, rebase, ...) can be done with a single command, with reasonable default arguments.
+- Try my best to make jj compatible with git remote actions (pull, push, create PRs...). Some bookmark actions are annoying, I make them implicit.
 - Integrate GitHub workflow into jj, (powered by gh cli).
-- Bring designable [starship](https://starship.rs/) prompt to jj.
 - Final goal: make a freshman user able to use jj **without any git knowledge**.
 
 MAKE **VERSION CONTROL** GREAT AGAIN!
@@ -38,7 +37,7 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [x] `--change` option
 - [x] Pull from Remote
 - [x] Update Trunk from a branch (`upbase`)
-- [ ] GitHub PR Create (?)
+- [ ] GitHub PR Create, TBD
 - [ ] Consider co-locate with git, to get highest IDE / git-tool compatibility
   - [ ] `clone --colocate`
   - [ ] `init --colocate`
