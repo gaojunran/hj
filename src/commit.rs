@@ -1,3 +1,5 @@
+use std::iter::once;
+
 use dialoguer::Input;
 use duct::cmd;
 
@@ -40,39 +42,36 @@ pub(crate) fn command_commit(
 }
 
 pub(crate) fn command_amend(into: Option<String>, force: bool) -> anyhow::Result<()> {
-    cmd!(
-        "jj",
+    let args: Vec<&str> = vec![
         "squash",
         "--interactive",
         "--from",
         "@",
         "--into",
-        if let Some(into) = into {
-            into
-        } else {
-            "@-".to_string()
-        },
-        if force { "--ignore-immutable" } else { "" }
-    )
-    .run()?;
+        into.as_deref().unwrap_or("@-"),
+        if force { "--ignore-immutable" } else { "" },
+    ]
+    .into_iter()
+    .filter(|s| !s.is_empty())
+    .collect();
+    cmd("jj", &args).run()?;
     Ok(())
 }
 
 pub(crate) fn command_reset(from: Option<String>, force: bool) -> anyhow::Result<()> {
-    cmd!(
-        "jj",
+    let args: Vec<&str> = vec![
         "squash",
         "--interactive",
         "--from",
-        if let Some(from) = from {
-            from
-        } else {
-            "@-".to_string()
-        },
+        from.as_deref().unwrap_or("@-"),
         "--into",
         "@",
-        if force { "--ignore-immutable" } else { "" }
-    )
-    .run()?;
+        if force { "--ignore-immutable" } else { "" },
+    ]
+    .into_iter()
+    .filter(|s| !s.is_empty())
+    .collect();
+
+    cmd("jj", &args).run()?;
     Ok(())
 }
