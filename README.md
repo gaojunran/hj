@@ -19,7 +19,7 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
   - [x] shorthand for github
   - [ ] shorthand for your own github repo (powered by gh cli)
 - [x] Download a repo (powered by [degit-rs](https://github.com/psnszsn/degit-rs))
-  - [ ] Download specified file / folder
+  - [x] Download specified file / folder (powered by [cloneit](https://github.com/alok8bb/cloneit))
 - [x] Initialize a repo
   - [x] Create a new repo on GitHub
   - [x] Add remote to local repo

@@ -80,6 +80,19 @@ hj download gaojunran/hj
 hj download vuejs/core vue  # 如果不指定名字，默认名为仓库名，即 core
 ```
 
+你还可以从一个仓库中下载指定的文件或文件夹，例如：
+
+```sh
+hj download vuejs/core -e package.json   # 下载 package.json 文件
+hj download vuejs/core -e src -e package.json   # 下载 src 文件夹和 package.json 文件
+```
+
+:::details
+
+下载指定文件（夹）的功能借鉴自 [cloneit](https://github.com/alok8bb/cloneit)。
+
+未来我们将会支持 GitLab。
+
 :::
 
 :::warning

@@ -1,42 +1,140 @@
+use anyhow::{Context, Result};
 use flate2::read::GzDecoder;
-use std::{env, path::PathBuf};
-// use futures::executor::block_on;
 use indicatif::{ProgressBar, ProgressStyle};
-use regex::Regex;
+use reqwest::blocking::Client;
+use serde::Deserialize;
+use std::env;
+use std::fs::{File, create_dir_all};
+use std::io::Write;
+use std::path::{Path, PathBuf};
 use tar::Archive;
 
-use crate::{config::AppConfig, utils::step};
+use crate::config::AppConfig;
 
+#[derive(Debug, Deserialize)]
+struct GithubEntry {
+    name: String,
+    path: String,
+    #[serde(rename = "type")]
+    kind: String,
+    download_url: Option<String>,
+    url: String,
+}
+
+// TODO: support gitlab
+// TODO: support branches and tags
 pub(crate) fn command_download(
     config: &AppConfig,
-    url_or_fullname: &str,
-    name: Option<&str>,
-) -> anyhow::Result<()> {
-    let url =
-        build_download_url(url_or_fullname).ok_or(anyhow::anyhow!("Invalid URL or fullname"))?;
-    download(&url, name)?;
+    source: &str,
+    destination: Option<&str>,
+    entries: Vec<String>,
+) -> Result<()> {
+    let (owner, repo) = parse_repo(source).context("Invalid URL or fullname")?;
+    let base_path = destination.unwrap_or(&repo);
+
+    if entries.is_empty() {
+        let url = build_url_whole(&owner, &repo).context("Could not build download URL")?;
+        download_whole(&url, base_path)?;
+    } else {
+        create_dir_all(base_path)?;
+        let client = Client::new();
+
+        for entry in entries {
+            let url = format!("https://api.github.com/repos/{owner}/{repo}/contents/{entry}");
+            let out_path = Path::new(base_path).join(&entry);
+            download_recursive(&client, &url, &out_path)?;
+        }
+    }
+
     Ok(())
 }
 
-fn build_download_url(url_or_fullname: &str) -> Option<String> {
-    let re_url = Regex::new(r"https://[^/]+/[^/]+(\.git)?").unwrap();
-    let re_fullname = Regex::new(r"^[^/]+/[^/]+$").unwrap();
-    if let Some(cap) = re_url.find(url_or_fullname) {
-        Some(cap.as_str().replace(".git", "") + "/archive/HEAD.tar.gz")
+// code from https://github.com/alok8bb/cloneit
+fn download_recursive(client: &Client, url: &str, out_path: &Path) -> Result<()> {
+    let res = client
+        .get(url)
+        .header("User-Agent", "rust-client")
+        .send()
+        .context("Request failed")?
+        .error_for_status()
+        .context("GitHub returned error status")?;
+
+    let text = res.text()?;
+
+    if text.trim_start().starts_with('[') {
+        let entries: Vec<GithubEntry> = serde_json::from_str(&text)?;
+        for entry in entries {
+            if entry.kind == "dir" {
+                let sub_path = out_path.join(&entry.name);
+                create_dir_all(&sub_path)?;
+                download_recursive(client, &entry.url, &sub_path)?;
+            } else if entry.kind == "file" {
+                if let Some(dl_url) = entry.download_url {
+                    let content = client
+                        .get(&dl_url)
+                        .header("User-Agent", "rust-client")
+                        .send()?
+                        .error_for_status()?;
+                    let bytes = content.bytes()?;
+                    let file_path = out_path.join(&entry.name);
+                    if let Some(parent) = file_path.parent() {
+                        create_dir_all(parent)?;
+                    }
+                    let mut f = File::create(file_path)?;
+                    f.write_all(&bytes)?;
+                    println!("+ {}", entry.path);
+                }
+            }
+        }
     } else {
-        re_fullname
-            .find(url_or_fullname)
-            .map(|cap| format!("https://github.com/{}/archive/HEAD.tar.gz", cap.as_str()))
-        // optional return
+        let entry: GithubEntry = serde_json::from_str(&text)?;
+        if entry.kind == "file" {
+            if let Some(dl_url) = entry.download_url {
+                let content = client
+                    .get(&dl_url)
+                    .header("User-Agent", "rust-client")
+                    .send()?
+                    .error_for_status()?;
+                let bytes = content.bytes()?;
+                if let Some(parent) = out_path.parent() {
+                    create_dir_all(parent)?;
+                }
+                let mut f = File::create(out_path)?;
+                f.write_all(&bytes)?;
+                println!("+ {}", entry.path);
+            }
+        }
     }
+    Ok(())
 }
 
-/// code from https://github.com/psnszsn/degit-rs/blob/c7dbeb75131510a79400838e081b90665c654c80/src/lib.rs#L115-L180
-fn download(url: &String, name: Option<&str>) -> anyhow::Result<()> {
-    // println!("{url}");
-    let client = reqwest::blocking::Client::builder()
-        // .user_agent("python-requests/2.32.3")
-        .build()?;
+fn parse_repo(input: &str) -> Option<(String, String)> {
+    if let Some(stripped) = input
+        .strip_prefix("http://")
+        .or_else(|| input.strip_prefix("https://"))
+    {
+        let parts: Vec<&str> = stripped.split('/').collect();
+        if parts.len() >= 3 && parts[0].ends_with(".com") {
+            return Some((parts[1].to_string(), parts[2].to_string()));
+        }
+    } else {
+        let parts: Vec<&str> = input.split('/').collect();
+        if parts.len() == 2 {
+            return Some((parts[0].to_string(), parts[1].to_string()));
+        }
+    }
+
+    None
+}
+
+fn build_url_whole(owner: &str, repo: &str) -> Option<String> {
+    Some(format!(
+        "https://github.com/{owner}/{repo}/archive/HEAD.tar.gz"
+    ))
+}
+
+fn download_whole(url: &String, destination: &str) -> Result<()> {
+    let client = reqwest::blocking::Client::builder().build()?;
     let response = client.get(url).send()?;
     match response.status() {
         reqwest::StatusCode::OK => (),
@@ -59,22 +157,13 @@ fn download(url: &String, name: Option<&str>) -> anyhow::Result<()> {
         None => ProgressBar::new_spinner(),
     };
 
-    step(format!("Downloading from {url}").as_str());
+    println!("> Downloading from {url}");
 
     let reader = pb.wrap_read(response);
     let tar = GzDecoder::new(reader);
     let mut archive = Archive::new(tar);
 
-    let replaced = url.replace("/archive/HEAD.tar.gz", "");
-
-    let dest = env::current_dir()?.join(if let Some(name) = name {
-        name
-    } else {
-        replaced
-            .split('/')
-            .next_back()
-            .ok_or(anyhow::anyhow!("Invalid URL"))?
-    });
+    let dest = env::current_dir()?.join(destination);
 
     archive
         .entries()?

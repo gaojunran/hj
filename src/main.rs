@@ -82,6 +82,9 @@ enum Commands {
         source: String,
         /// Path to download the repo to. By default is `./<repo-name>`.
         destination: Option<String>,
+        /// Entries (specified files or directories) to download. If not given, download the whole repo.
+        #[arg(short, long)]
+        entry: Vec<String>,
     },
 
     /// Push changes to the remote
@@ -285,8 +288,11 @@ fn main() {
         Commands::Download {
             source,
             destination,
+            entry,
         } => {
-            if let Err(e) = command_download(&config, source, destination.as_deref()) {
+            if let Err(e) =
+                command_download(&config, source, destination.as_deref(), entry.to_vec())
+            {
                 error(&e.to_string());
             }
         }
