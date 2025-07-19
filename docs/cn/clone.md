@@ -91,6 +91,8 @@ hj download vuejs/core -e src -e package.json   # 下载 src 文件夹和 packag
 
 下载指定文件（夹）的功能借鉴自 [cloneit](https://github.com/alok8bb/cloneit)。
 
+此功能高度依赖 GitHub API，故如果您有 API 速率限制问题，请自行导出 `GITHUB_TOKEN` 环境变量，程序将会自动使用。
+
 未来我们将会支持 GitLab。
 
 :::

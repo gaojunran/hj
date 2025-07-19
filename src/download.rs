@@ -2,6 +2,7 @@ use anyhow::{Context, Result};
 use flate2::read::GzDecoder;
 use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::blocking::Client;
+use reqwest::header::{AUTHORIZATION, HeaderMap, HeaderValue, USER_AGENT};
 use serde::Deserialize;
 use std::env;
 use std::fs::{File, create_dir_all};
@@ -32,12 +33,24 @@ pub(crate) fn command_download(
     let (owner, repo) = parse_repo(source).context("Invalid URL or fullname")?;
     let base_path = destination.unwrap_or(&repo);
 
+    let mut headers = HeaderMap::new();
+    headers.insert(USER_AGENT, HeaderValue::from_static("rust-client"));
+
+    if let Ok(token) = std::env::var("GITHUB_TOKEN") {
+        let value = format!("token {}", token);
+        headers.insert(
+            AUTHORIZATION,
+            HeaderValue::from_str(&value).expect("Invalid GITHUB_TOKEN"),
+        );
+    }
+
+    let client = Client::builder().default_headers(headers).build()?;
+
     if entries.is_empty() {
         let url = build_url_whole(&owner, &repo).context("Could not build download URL")?;
-        download_whole(&url, base_path)?;
+        download_whole(&client, &url, base_path)?;
     } else {
         create_dir_all(base_path)?;
-        let client = Client::new();
 
         for entry in entries {
             let url = format!("https://api.github.com/repos/{owner}/{repo}/contents/{entry}");
@@ -53,7 +66,7 @@ pub(crate) fn command_download(
 fn download_recursive(client: &Client, url: &str, out_path: &Path) -> Result<()> {
     let res = client
         .get(url)
-        .header("User-Agent", "rust-client")
+        // .header("User-Agent", "rust-client")
         .send()
         .context("Request failed")?
         .error_for_status()
@@ -72,7 +85,7 @@ fn download_recursive(client: &Client, url: &str, out_path: &Path) -> Result<()>
                 if let Some(dl_url) = entry.download_url {
                     let content = client
                         .get(&dl_url)
-                        .header("User-Agent", "rust-client")
+                        // .header("User-Agent", "rust-client")
                         .send()?
                         .error_for_status()?;
                     let bytes = content.bytes()?;
@@ -92,7 +105,7 @@ fn download_recursive(client: &Client, url: &str, out_path: &Path) -> Result<()>
             if let Some(dl_url) = entry.download_url {
                 let content = client
                     .get(&dl_url)
-                    .header("User-Agent", "rust-client")
+                    // .header("User-Agent", "rust-client")
                     .send()?
                     .error_for_status()?;
                 let bytes = content.bytes()?;
@@ -133,8 +146,8 @@ fn build_url_whole(owner: &str, repo: &str) -> Option<String> {
     ))
 }
 
-fn download_whole(url: &String, destination: &str) -> Result<()> {
-    let client = reqwest::blocking::Client::builder().build()?;
+fn download_whole(client: &Client, url: &String, destination: &str) -> Result<()> {
+    // let client = reqwest::blocking::Client::builder().build()?;
     let response = client.get(url).send()?;
     match response.status() {
         reqwest::StatusCode::OK => (),
