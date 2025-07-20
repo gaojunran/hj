@@ -11,7 +11,7 @@ pub(crate) fn command_switch(
     git: bool,
 ) -> anyhow::Result<()> {
     if config.switch_config.keepup || keepup {
-        command_keepup(config, &vec![branch.clone()])?;
+        command_keepup(config, &vec![])?;
     }
     // if there are multiple commits on top of the branch bookmark, switch to the latest one
     let rev = format!("latest({branch}+)");

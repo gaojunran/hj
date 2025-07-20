@@ -30,5 +30,4 @@ install:
   cargo install --path .
 
 doc:
-  cd docs
-  pnpm run docs:dev
+  cd docs && pnpm run docs:dev

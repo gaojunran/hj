@@ -8,7 +8,7 @@ hj 中的分支模型和 git 中不同。每次提交（commit）后，hj 不会
 
 :::details 对于熟悉 jj 的用户
 
-hj 的分支（书签）模型基于 jj 改进而来。`hj push` 和 `hj switch` 的操作都会自动推进书签到当前最新的提交。注意，如果你使用其它命令，例如 `hj new / edit / prev` 等能改变工作副本指向的命令，书签不会自动推送！你需要手动调用 `hj keepup` 命令来推送书签后，再尝试改变工作副本指向。
+hj 的分支（书签）模型基于 jj 改进而来。`hj push` 和 `hj switch` 的操作都会自动推进书签到当前最新的提交。注意，如果你使用其它命令，例如 `hj new / edit / prev` 等能改变工作副本指向的命令，书签不会自动推进！你需要手动调用 `hj keepup` 命令来推进书签后，再尝试改变工作副本指向。
 
 :::
 
@@ -34,6 +34,9 @@ git checkout main
 hj keepup  # jj bookmark move --from "heads(::@- & bookmarks())" --to @-
 jj edit "latest(main+)" 
 ```
+
+如果目标分支存在多个工作副本提交，`hj switch` 默认会选择最新的一个。
+
 不像 git 一样，hj 切换分支一定会成功，因为其工作副本被视作一个提交。 
 
 :::
