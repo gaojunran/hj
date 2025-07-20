@@ -14,6 +14,7 @@ pub struct AppConfig {
     pub push_config: PushConfig,
     pub upbase_config: UpbaseConfig,
     pub switch_config: SwitchConfig,
+    pub open_config: OpenConfig,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -39,6 +40,11 @@ pub struct UpbaseConfig {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct SwitchConfig {
     pub keepup: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct OpenConfig {
+    pub editor: Option<String>,
 }
 
 impl Default for AppConfig {
@@ -110,6 +116,7 @@ impl Default for AppConfig {
             },
             switch_config: SwitchConfig { keepup: true },
             upbase_config: UpbaseConfig { fetch: true },
+            open_config: OpenConfig { editor: None },
         }
     }
 }
@@ -137,7 +144,11 @@ impl AppConfig {
             .add_source(File::from(global_config_path).required(false))
             .add_source(File::from(local_config_path).required(false))
             // load environment variables with prefix HJ_
-            .add_source(Environment::with_prefix("HJ").separator("_"));
+            .add_source(
+                Environment::with_prefix("HJ")
+                    .prefix_separator("__")
+                    .separator("__"),
+            );
 
         let config = builder.build()?;
         config.try_deserialize()
