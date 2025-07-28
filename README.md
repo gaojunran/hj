@@ -17,6 +17,7 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
 - [x] Clone a repo
   - [x] shorthand for github
   - [ ] shorthand for your own github repo (powered by gh cli)
+  - [ ] Fork and clone a repo (powered by gh cli)
 - [x] Download a repo (powered by [degit-rs](https://github.com/psnszsn/degit-rs))
   - [x] Download specified file / folder (powered by [cloneit](https://github.com/alok8bb/cloneit))
 - [x] Initialize a repo
@@ -56,10 +57,12 @@ MAKE **VERSION CONTROL** GREAT AGAIN!
 
 ## Nice ideas that may be added in `hj`
 
-- [Find the closest bookmark in history to advance it forward](https://github.com/jj-vcs/jj/discussions/5568)
-- [Select all my branches with the goal of rebasing them all on the trunk](https://github.com/jj-vcs/jj/discussions/4974)
+- ✅ [Find the closest bookmark in history to advance it forward](https://github.com/jj-vcs/jj/discussions/5568)
+- ✅ [Select all my branches with the goal of rebasing them all on the trunk](https://github.com/jj-vcs/jj/discussions/4974)
 - [`gh pr create`](https://github.com/jj-vcs/jj/discussions/6279)
 - [jj configurations](https://github.com/jj-vcs/jj/discussions/5812)
+- [GitHub Integration](https://github.com/jj-vcs/jj/issues/4555)
+
 
 ## Now you can try hj ...
 

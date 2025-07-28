@@ -15,6 +15,8 @@ pub(crate) fn command_switch(
     }
     // if there are multiple commits on top of the branch bookmark, switch to the latest one
     let rev = format!("latest({branch}+)");
+    // FIXME: what if there are no commits on top of the branch bookmark?
+    // Try: jj log -r "(main+) ~ bookmarks() ~ description('')"
     cmd!("jj", "edit", &rev).run()?;
     if git {
         check_git_installed()?;
