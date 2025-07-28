@@ -31,3 +31,6 @@ install:
 
 doc:
   cd docs && pnpm run docs:dev
+
+stat:
+  cd src && tokei .

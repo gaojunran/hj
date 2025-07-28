@@ -5,8 +5,10 @@ mod download;
 mod init;
 mod keepup;
 mod log;
+mod open;
 mod pull;
 mod push;
+mod starship;
 mod switch;
 mod tools;
 mod upbase;
@@ -26,6 +28,7 @@ use crate::{
     init::command_init,
     keepup::command_keepup,
     log::command_log_all,
+    open::command_open,
     pull::command_pull,
     push::command_push,
     switch::command_switch,
@@ -163,6 +166,13 @@ enum Commands {
     /// Log all commits.
     #[command(aliases = ["lg", "all"])]
     LogAll,
+
+    /// Open root with your default editor.
+    #[command(alias = "o")]
+    Open {
+        /// open remote url
+        remote: Option<String>,
+    },
 }
 
 fn check_jj_installed() -> anyhow::Result<()> {
@@ -313,6 +323,11 @@ fn main() {
         }
         Commands::LogAll => {
             if let Err(e) = command_log_all(&config) {
+                error(&e.to_string());
+            }
+        }
+        Commands::Open { remote } => {
+            if let Err(e) = command_open(&config, remote.clone()) {
                 error(&e.to_string());
             }
         }
