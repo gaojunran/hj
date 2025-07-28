@@ -9,8 +9,6 @@ pub(crate) fn command_open(config: &AppConfig, remote: Option<String>) -> anyhow
             if let Some(editor) = &config.open_config.editor {
                 cmd!(editor, path).run()?;
                 return Ok(());
-            } else {
-                // warning("");
             }
             match std::env::var("EDITOR") {
                 Ok(editor) => {

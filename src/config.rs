@@ -1,5 +1,5 @@
 use config::{Config, ConfigError, Environment, File};
-use dirs::config_dir;
+use dirs::{config_dir, home_dir};
 use std::{env, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
@@ -124,11 +124,12 @@ impl Default for AppConfig {
 impl AppConfig {
     pub fn from_env() -> Result<Self, ConfigError> {
         // default config location: ~/.config/hj/config.toml
-        let mut global_config_path = PathBuf::new();
-        if let Some(mut base) = config_dir() {
-            base.push("hj/config.toml");
-            global_config_path = base;
-        }
+        let xdg = env::var("XDG_CONFIG_HOME").ok();
+        let global_config_path = match xdg {
+            Some(xdg) => PathBuf::from(xdg).join("hj/config.toml"),
+            None => home_dir().unwrap().join(".config/hj/config.toml"),
+        };
+        // println!("global config path: {:?}", global_config_path);
         let mut local_config_path = PathBuf::new();
         if let Ok(mut base) = env::current_dir() {
             base.push("hj.toml");
