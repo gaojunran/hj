@@ -6,7 +6,7 @@ on:
       - 'v*.*.*'    # 所有符合 vX.Y.Z 格式的 tag
 
 env:
-  PROJECT_NAME: your_crate_name  # 替换为你 Cargo.toml 中的 package.name
+  PROJECT_NAME: hj  # 替换为你 Cargo.toml 中的 package.name
 
 jobs:
   build:
