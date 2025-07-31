@@ -1,0 +1,93 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'    # 所有符合 vX.Y.Z 格式的 tag
+
+env:
+  PROJECT_NAME: your_crate_name  # 替换为你 Cargo.toml 中的 package.name
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64
+            runs-on: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - name: linux-arm64
+            runs-on: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+          - name: windows-x64
+            runs-on: windows-latest
+            target: x86_64-pc-windows-msvc
+          - name: windows-arm64
+            runs-on: windows-latest
+            target: aarch64-pc-windows-msvc
+          - name: macos-x64
+            runs-on: macos-latest
+            target: x86_64-apple-darwin
+          - name: macos-arm64
+            runs-on: macos-latest
+            target: aarch64-apple-darwin
+
+    runs-on: ${{ matrix.runs-on }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      # 可选缓存，加快依赖构建
+      - name: Cache cargo registry and index
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: cache-${{ runner.os }}-${{ matrix.target }}
+
+      - name: Build release
+        run: |
+          BIN_SUFFIX=""
+          if [[ "${{ matrix.runs-on }}" == "windows-latest" ]]; then
+            BIN_SUFFIX=".exe"
+          fi
+          cargo build --release --target ${{ matrix.target }}
+          mv target/${{ matrix.target }}/release/${PROJECT_NAME}${BIN_SUFFIX}\
+             ./dist/${PROJECT_NAME}-${{ matrix.name }}${BIN_SUFFIX}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.name }}
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: |
+            Release for version ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Attach binaries
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/dist/*
+
