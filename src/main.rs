@@ -57,6 +57,10 @@ enum Commands {
         /// Make the GitHub repository private if given
         #[arg(long)]
         private: bool,
+
+        /// Whether to colocate or not.
+        #[arg(short, long)]
+        colocate: bool,
     },
 
     /// Clone a repo from remote.
@@ -65,6 +69,10 @@ enum Commands {
         source: String,
         /// The directory to clone into. By default is ./<repo-name>.
         destination: Option<String>,
+
+        /// Whether to colocate or not.
+        #[arg(short, long)]
+        colocate: bool,
     },
 
     /// Create a commit.
@@ -251,16 +259,21 @@ fn main() {
     }
     let cli = Cli::parse();
     match &cli.command {
-        Commands::Init { github, private } => {
-            if let Err(e) = command_init(&config, *github, *private) {
+        Commands::Init {
+            github,
+            private,
+            colocate,
+        } => {
+            if let Err(e) = command_init(&config, *github, *private, *colocate) {
                 error(&e.to_string());
             }
         }
         Commands::Clone {
             source,
             destination,
+            colocate,
         } => {
-            if let Err(e) = command_clone(&config, source, destination.as_deref()) {
+            if let Err(e) = command_clone(&config, source, destination.as_deref(), *colocate) {
                 error(&e.to_string());
             }
         }

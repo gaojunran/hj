@@ -3,9 +3,19 @@ use regex::Regex;
 
 use crate::{config::AppConfig, utils::step};
 
-pub(crate) fn command_init(config: &AppConfig, github: bool, private: bool) -> anyhow::Result<()> {
+pub(crate) fn command_init(
+    config: &AppConfig,
+    github: bool,
+    private: bool,
+    colocate: bool,
+) -> anyhow::Result<()> {
     step("Initializing jj repository...");
-    cmd!("jj", "git", "init").run()?;
+    let args = if colocate || config.always_colocate {
+        vec!["git", "init", "--colocate"]
+    } else {
+        vec!["git", "init"]
+    };
+    cmd("jj", args).run()?;
     let default_branch = config.init_config.default_branch.clone();
     step(format!("Setting default branch to `{default_branch}`...").as_str());
     cmd!("jj", "bookmark", "set", "-r", "@", default_branch).read()?;

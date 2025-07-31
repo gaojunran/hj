@@ -10,6 +10,7 @@ pub struct AppConfig {
     pub default_host: String,
     pub fallback_commands: Vec<String>,
     pub shortcut_branches: Vec<String>,
+    pub always_colocate: bool,
     pub init_config: InitConfig,
     pub push_config: PushConfig,
     pub upbase_config: UpbaseConfig,
@@ -104,6 +105,7 @@ impl Default for AppConfig {
                 .iter()
                 .map(|item| item.to_string())
                 .collect(),
+            always_colocate: false,
             init_config: InitConfig {
                 default_remote_name: "origin".to_string(),
                 default_branch: "main".to_string(),
