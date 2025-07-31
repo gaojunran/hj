@@ -3,10 +3,10 @@ name: Release
 on:
   push:
     tags:
-      - 'v*.*.*'    # 所有符合 vX.Y.Z 格式的 tag
+      - 'v*.*.*'  
 
 env:
-  PROJECT_NAME: hj  # 替换为你 Cargo.toml 中的 package.name
+  PROJECT_NAME: hj  
 
 jobs:
   build:
@@ -36,31 +36,32 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
 
-      # 可选缓存，加快依赖构建
-      - name: Cache cargo registry and index
+      - name: Cache cargo
         uses: Swatinem/rust-cache@v2
         with:
-          key: cache-${{ runner.os }}-${{ matrix.target }}
+          key: ${{ runner.os }}-${{ matrix.target }}
 
       - name: Build release
+        shell: bash
         run: |
+          mkdir -p dist
           BIN_SUFFIX=""
           if [[ "${{ matrix.runs-on }}" == "windows-latest" ]]; then
             BIN_SUFFIX=".exe"
           fi
           cargo build --release --target ${{ matrix.target }}
-          mv target/${{ matrix.target }}/release/${PROJECT_NAME}${BIN_SUFFIX}\
-             ./dist/${PROJECT_NAME}-${{ matrix.name }}${BIN_SUFFIX}
+          cp target/${{ matrix.target }}/release/${PROJECT_NAME}${BIN_SUFFIX} \
+             dist/${PROJECT_NAME}-${{ matrix.name }}${BIN_SUFFIX}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
           path: dist/
@@ -69,13 +70,13 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Download all build artifacts
-        uses: actions/download-artifact@v3
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
@@ -86,8 +87,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Attach binaries
-        uses: softprops/action-gh-release@v1
+      - name: Upload binaries to release
+        uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/dist/*
-
+          files: artifacts/**/*
