@@ -48,7 +48,7 @@ HJ_DEFAULT_HOST=gitlab.com hj clone gaojunran/hj
 
 ---
 
-也可以指定目标文件夹路径。默认是远程仓库的名字。如果你这样运行：
+也可以指定目标文件夹路径。默认是远程仓库的名字。如果你这样执行：
 
 ```sh
 hj clone gaojunran/hj .  # 关注最后的 . 表示当前文件夹
@@ -103,8 +103,8 @@ hj download vuejs/core -e src -e package.json   # 下载 src 文件夹和 packag
 
 :::
 
-:::warning
+:::tip
 
-再次强调，此功能与 **版本控制** 完全无关！它只是我们给你提供的一个方便的小礼物 🎁；下载仓库后，你可以继续使用 `hj init` 来进行自己的版本控制。
+下载仓库与 **版本控制** 完全无关！它只是我们给你提供的一个方便的小礼物 🎁；下载仓库后，你可以继续使用 `hj init` 来进行自己的版本控制。
 
 :::

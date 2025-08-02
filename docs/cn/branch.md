@@ -44,7 +44,7 @@ jj edit "latest(main+)"
 切换分支操作将移动你的工作副本，使其指向另一个分支的头提交。你可以使用：
 
 ```sh
-hj switch <branch>
+hj switch BRANCH
 ```
 
 来切换到一个分支。

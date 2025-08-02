@@ -4,6 +4,9 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "hj document",
   description: "Fast, opinionated version control experience.",
+  markdown: {
+    theme: "vitesse-dark"
+  },
   locales: {
     root: {
       label: 'English',
@@ -13,9 +16,6 @@ export default defineConfig({
       label: '中文',
       lang: 'zh-CN',
     }
-  },
-  markdown: {
-    theme: 'red'
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config

@@ -40,7 +40,7 @@ hj commit "feat: add new feature"
 
 :::tip 未来计划
 
-未来我们会支持向命令行参数中传入文件，而不只是交互式地选择，以支持 hj 在更广泛地场景下被使用，例如脚本。
+未来我们将支持在终端编辑器中编辑提交描述信息。这对于多行描述信息很有用。
 
 :::
 
@@ -54,7 +54,25 @@ hj commit "feat: add new feature"
 
 ## 重命名提交
 
-TODO
+::: details 对于熟悉 git 的用户
+
+要在 Git 中重命名一个历史提交，可以通过交互式变基 `reword` 命令实现。
+
+:::
+
+::: details 对于熟悉 jj 的用户
+
+`hj describe` 和 `jj describe` 完全等价。
+
+:::
+
+`hj describe` 命令可以用来重命名一个提交：
+
+```sh
+hj describe REVSET -m "new message"
+```
+
+`REVSET` 处填写一个具体的提交，如 `@-` 表示最近的一次提交；`-m` 参数填写新的提交描述信息。
 
 ## 增补提交
 
@@ -81,10 +99,10 @@ git 没有不可变提交的机制，所以 `hj amend --force` 在 git 中没有
 jj squash --interactive --from @ --into @-
 ```
 
-`hj amend <revset>`的实质是：
+`hj amend REVSET`的实质是：
 
 ```sh
-jj squash --interactive --from @ --into <revset>
+jj squash --interactive --from @ --into REVSET
 ```
 
 `--force` 这个标志对应 `jj squash`的 `--ignore-immutable` 标志。
@@ -104,7 +122,7 @@ hj amend
 你也可以指定将工作副本中的一部分变更增补到 **任意提交** 中：
 
 ```sh
-hj amend <revset>
+hj amend REVSET
 ```
 
 已推送（push）的提交很可能是不可变的，增补它可能是 **不安全** 的。此时可以加上 `--force` 参数来强制增补。
@@ -120,7 +138,7 @@ git reset -p HEAD^  # 针对改动块
 git reset HEAD^ -- file1 file2 file3  # 针对文件
 ```
 
-而 `hj amend <revset>` 需要复杂的交互式变基才能实现。
+而 `hj reset REVSET` 需要复杂的交互式变基才能实现。
 
 :::
 
@@ -132,10 +150,10 @@ git reset HEAD^ -- file1 file2 file3  # 针对文件
 jj squash --interactive --from @- --into @
 ```
 
-`hj reset <revset>`的实质是：
+`hj reset REVSET`的实质是：
 
 ```sh
-jj squash --interactive --from <revset> --into @
+jj squash --interactive --from REVSET --into @
 ```
 
 
@@ -149,9 +167,110 @@ jj squash --interactive --from <revset> --into @
 `reset` 操作是 `amend` 操作的逆操作，可以将一个提交的部分或全部内容撤回到工作副本中（如果没有指定，这个提交默认是最近一次提交）：
 
 ```sh
-hj reset <revset>
+hj reset REVSET
 ```
 
-特别地，如果你撤回了一个提交的全部内容，这个提交将会被删除（abandon）。
+特别地，如果你撤回了一个提交的全部内容，这个提交将会被删除（abandoned）。
 
 和增补一样，可以加上 `--force` 参数来强制删减。
+
+## 在提交间移动变更
+
+::: details 对于熟悉 git 的用户
+
+对于跨分支的操作，可以使用 `git diff` + `git apply`：
+
+```sh
+git diff C~ C -- path/to/file > patch.diff
+git checkout B
+git apply patch.diff
+git commit -am "手动移动变更"
+```
+
+这只是其中一种实现方式。git 中不存在能完成这个操作的单行命令。
+
+:::
+
+::: details 对于熟悉 jj 的用户
+
+`hj squash` 和 `jj squash` 完全等价。
+
+:::
+
+我们可以总结一下前面提到的两个操作：
+
+- `hj amend`：将 **工作副本** 中的变更增补到某次提交（默认为最近一次提交）中。
+- `hj reset`：将某次提交（默认为最近一次提交）中的部分或全部内容撤回到 **工作副本** 中。
+
+如果我们不局限于在工作副本和提交中间移动变更，而是 **在两个任意提交中移动变更**，则可以：
+
+```sh
+hj squash -i --from A --into B
+```
+
+这会将提交 A 中的部分变更移动到提交 B 中。其中 `-i` 参数表示交互式选择变更，如果不提供则表示将提交 A 整体合并入提交 B 中。
+
+更多用法参见 [jj squash](https://jj-vcs.github.io/jj/latest/cli-reference/#jj-squash)。
+
+---
+
+## 将提交中的变更拆分为一个提交
+
+::: details 对于熟悉 git 的用户
+
+你可以用交互式 rebase：
+
+```bash
+git rebase -i HEAD~3
+```
+
+- 找到要拆分的提交（例如 pick abc123）
+- 将它改为 edit
+- 保存并退出编辑器
+- `git reset HEAD^` → `git add -p` → 多次提交
+
+这只是其中一种实现方式。git 中不存在能完成这个操作的单行命令。
+
+:::
+
+::: details 对于熟悉 jj 的用户
+
+`hj split` 和 `jj split` 完全等价。
+
+:::
+
+很多时候你会发现自己的提交粒度太大，应该拆分成多个。你可以使用：
+
+```sh
+hj split -r A -d B
+```
+
+这将将提交 A 中的部分变更拆分出来，作为一个新提交放到已有提交 B 之上。
+
+更多用法参见 [jj split](https://jj-vcs.github.io/jj/latest/cli-reference/#jj-split)。
+
+## 移动提交的位置
+
+::: details 对于熟悉 git 的用户
+
+如果你想改变提交的顺序，在同一个分支中可以使用交互式变基 `git rebase -i`；跨分支的操作需要 `git cherry-pick` 等操作。
+
+git 中不存在能完成这个操作的单行命令。
+
+:::
+
+::: details 对于熟悉 jj 的用户
+
+`hj rebase` 和 `jj rebase` 完全等价。
+
+:::
+
+一个非常好用的工具是 `rebase`，它可以将一个提交移动到另一个提交之上，不论这两个提交是否位于同一分支：
+
+```sh
+hj rebase -s A -d B
+```
+
+这将把提交 A 移动到提交 B 之上。
+
+更多用法参见 [jj rebase](https://jj-vcs.github.io/jj/latest/cli-reference/#jj-rebase)。

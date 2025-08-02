@@ -59,7 +59,7 @@ enum Commands {
         private: bool,
 
         /// Whether to colocate or not.
-        #[arg(short, long)]
+        #[arg(short, long, alias = "git")]
         colocate: bool,
     },
 
@@ -71,7 +71,7 @@ enum Commands {
         destination: Option<String>,
 
         /// Whether to colocate or not.
-        #[arg(short, long)]
+        #[arg(short, long, alias = "git")]
         colocate: bool,
     },
 

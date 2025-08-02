@@ -73,10 +73,10 @@ hj push
 
 git 有 **远程分支** 的概念，所以需要进行实际的变基才能将远程变更同步到本地。
 
-`hj pull <branch>`近似于：
+`hj pull BRANCH`近似于：
 
 ```sh
-git checkout <branch>
+git checkout BRANCH
 git pull --rebase
 ```
 
@@ -84,11 +84,11 @@ git pull --rebase
 
 ::: details 对于熟悉 jj 的用户
 
-jj 没有原生的 `jj git pull` 命令。`jj git fetch` 命令可以实现类似的功能，但不会将本地的新提交变基到远程新提交之上。`hj pull <branch>` 的实际操作是：
+jj 没有原生的 `jj git pull` 命令。`jj git fetch` 命令可以实现类似的功能，但不会将本地的新提交变基到远程新提交之上。`hj pull BRANCH` 的实际操作是：
 
 ```sh
 jj git fetch   # 拉取所有跟踪分支
-jj rebase -d <branch>  # 如果不指定 branch，就没有这个操作
+jj rebase -d BRANCH  # 如果不指定 branch，就没有这个操作
 ```
 
 :::
@@ -182,16 +182,8 @@ hj upbase featA featB
 
 如果你不在本地处理这些冲突，PR 创建后合并会失败，CI/CD 可能会失败，合并按钮会被禁用。
 
-通过在本地提前合并/rebase，你可以 在发 PR 之前就解决冲突，减少 reviewer 的负担。
+通过在本地提前合并/变基，你可以在发 PR 之前就解决冲突，减少代码审查者的负担。
 
 :::
 
 这个 `upbase` 操作往往是在推送前进行的，因此 `hj push` 命令也支持 `--upbase` 选项。
-
-<!-- :::tip 未来计划
-
-你是否需要一个 `sync` 命令，在单个操作中同步你的所有分支（至少是单向的）？
-
-未来 `hj sync` 可能会实现这个功能。
-
-::: -->
