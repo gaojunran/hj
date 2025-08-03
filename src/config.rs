@@ -57,6 +57,7 @@ impl Default for AppConfig {
                 "abandon",
                 "absorb",
                 "backout",
+                "b", // bookmark
                 "bookmark",
                 "config",
                 "debug",
