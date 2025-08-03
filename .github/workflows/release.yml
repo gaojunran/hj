@@ -28,10 +28,10 @@ jobs:
             use-cross: true
             os: ubuntu-latest  # cross 也支持 windows targets
 
-          - name: windows-arm64
-            target: aarch64-pc-windows-gnu
-            use-cross: true
-            os: ubuntu-latest
+          # - name: windows-arm64
+          #   target: aarch64-pc-windows-gnu
+          #   use-cross: true
+          #   os: ubuntu-latest
 
           - name: macos-x64
             target: x86_64-apple-darwin
