@@ -1,6 +1,3 @@
-use std::iter::once;
-
-use dialoguer::Input;
 use duct::cmd;
 
 use crate::{config::AppConfig, push::command_push, utils::step};
@@ -13,18 +10,7 @@ pub(crate) fn command_commit(
     if let Some(msg) = message {
         cmd!("jj", "commit", "--interactive", "--message", msg).run()?;
     } else {
-        cmd!(
-            "jj",
-            "commit",
-            "--interactive",
-            "--message",
-            "[placeholder commit message by hj]"
-        )
-        .run()?;
-        let desc = Input::<String>::new()
-            .with_prompt("Enter commit message")
-            .interact_text()?;
-        cmd!("jj", "desc", "-r", "@-", "--message", desc).run()?;
+        cmd!("jj", "commit", "--interactive").run()?;
     }
     // TODO: should we give more options here?
     if push {
