@@ -9,16 +9,26 @@ pub(crate) fn command_init(
     private: bool,
     colocate: bool,
 ) -> anyhow::Result<()> {
+    let mut already_init = false;
     step("Initializing jj repository...");
     let args = if colocate || config.always_colocate {
         vec!["git", "init", "--colocate"]
     } else {
         vec!["git", "init"]
     };
-    cmd("jj", args).run()?;
-    let default_branch = config.init_config.default_branch.clone();
-    step(format!("Setting default branch to `{default_branch}`...").as_str());
-    cmd!("jj", "bookmark", "set", "-r", "@", default_branch).read()?;
+    if let Err(e) = cmd("jj", args).run() {
+        if github {
+            already_init = true;
+        } else {
+            anyhow::bail!("Failed to initialize jj repository: {e}");
+        }
+    };
+
+    if !already_init {
+        let default_branch = config.init_config.default_branch.clone();
+        step(format!("Setting default branch to `{default_branch}`...").as_str());
+        cmd!("jj", "bookmark", "set", "-r", "@", default_branch).read()?;
+    }
 
     // TODO: add a flag --no-github
     if config.init_config.create_github_repo || github {
