@@ -9,11 +9,13 @@ pub(crate) fn command_keepup(config: &AppConfig, branch: &Vec<String>) -> anyhow
             "bookmark",
             "move",
             "--from",
-            "heads(::@- & bookmarks())",
+            "heads(::@ & bookmarks())",
             "--to",
-            "@-"
+            "heads(::@ & mutable() & ~description(exact:\"\") & (~empty() | merges()))"
         )
-        .run()?; // from https://github.com/jj-vcs/jj/discussions/5568
+        .run()?;
+        // from https://github.com/jj-vcs/jj/discussions/5568
+        // and https://github.com/jj-vcs/jj/discussions/5568#discussioncomment-13007551
     } else {
         for bookmark in branch {
             cmd!("jj", "bookmark", "set", "-r", "@-", bookmark).run()?;
