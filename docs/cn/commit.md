@@ -214,7 +214,7 @@ hj squash -i --from A --into B
 
 ---
 
-## 将提交中的变更拆分为一个提交
+## 拆分提交
 
 ::: details 对于熟悉 git 的用户
 
@@ -274,3 +274,33 @@ hj rebase -s A -d B
 这将把提交 A 移动到提交 B 之上。
 
 更多用法参见 [jj rebase](https://jj-vcs.github.io/jj/latest/cli-reference/#jj-rebase)。
+
+## 删除提交
+
+::: details 对于熟悉 git 的用户
+
+`hj abandon B` 近似于：
+
+```sh
+git rebase --onto B^ B
+```
+
+特别地，如果 B 是合并提交，`B^`（ B 的父提交）可能存在多个。这种情况下你需要显式地指定，否则命令会失败。
+
+:::
+
+::: details 对于熟悉 jj 的用户
+
+`hj abandon` 和 `jj abandon` 完全等价。
+
+:::
+
+`abandon` 命令可以用来删除一个提交：
+
+```sh
+hj abandon REVSET
+```
+
+这将移除这个提交，并将其子提交变基到其父提交上。
+
+特别地，如果不指定 `REVSET`，将默认为工作副本（`@`）。此时会清空工作副本的所有变更，并自动地创建一个新工作副本提交。

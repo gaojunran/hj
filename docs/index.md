@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "hj document"
+  name: "hj"
   text: "Fast, opinionated version control experience."
   tagline: My great project tagline
   actions:

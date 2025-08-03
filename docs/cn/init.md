@@ -42,7 +42,7 @@ jj bookmark set main
 hj init --github
 ```
 
-这将调用本地的命令行工具 [gh](https://cli.github.com/) 来创建一个新的 GitHub 仓库，并将其设置为远程 origin 仓库。仓库默认以 **当前目录名** 命名，并为公开仓库（可以额外传递参数 `--private` 来创建私有仓库）。
+这将调用本地的命令行工具 [gh](https://cli.github.com/) 来创建一个新的 GitHub 仓库，并将其设置为远程名为 `origin` 的仓库。仓库默认以 **当前目录名** 命名，并为公开仓库（可以额外传递参数 `--private` 来创建私有仓库）。
 
 :::tip
 
@@ -85,10 +85,10 @@ hj open
 另外，你可以使用：
 
 ```sh
-hj open REMOTE
+hj open REMOTE   # 默认的远程名是 origin
 ```
 
-来使用默认的浏览器打开远程仓库的网页地址，例如最常见远程名是 `origin`。
+来使用默认的浏览器打开远程仓库的网页地址。
 
 
 <!-- 运行：
