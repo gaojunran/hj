@@ -3,10 +3,13 @@ name: Release
 on:
   push:
     tags:
-      - 'v*.*.*'  # 如 v1.0.0
+      - 'v*.*.*'  
 
 env:
-  PROJECT_NAME: hj  # 替换成你的包名
+  PROJECT_NAME: hj  
+
+permissions:
+  contents: write
 
 jobs:
   build:
