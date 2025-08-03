@@ -116,6 +116,8 @@ jobs:
             Release for version ${{ github.ref_name }}
           draft: false
           prerelease: false
+          fail_on_unmatched_files: false
+          overwrite: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
