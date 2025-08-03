@@ -32,19 +32,11 @@ hj clone https://github.com/gaojunran/hj.git
 hj clone gaojunran/hj
 ```
 
-这建立在默认 host 是 `github.com` 的前提下。你可以通过覆写环境变量来修改默认行为：
+这建立在默认 host 是 `github.com` 的前提下。你可以通过 [覆写环境变量](/cn/config) 来修改默认行为：
 
 ```sh
-HJ_DEFAULT_HOST=gitlab.com hj clone gaojunran/hj
+HJ__DEFAULT_HOST=gitlab.com hj clone gaojunran/hj
 ```
-
-:::tip 未来计划
-
-未来我们可能会提供一个 flag，如 `--host` 来指定不同的源。
-
-对于 GitHub 仓库，未来我们会补充一个克隆自己仓库省略 owner 的功能。
-
-:::
 
 ---
 

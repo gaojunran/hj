@@ -32,6 +32,7 @@ export default defineConfig({
           {
             text: 'Advanced',
             items: [
+              { text: 'Config', link: '/config' },
               { text: 'FAQ', link: '/faq' },
             ]
           }
@@ -48,7 +49,7 @@ export default defineConfig({
       themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
         nav: [
-          { text: '主页', link: '/' },
+          { text: '主页', link: '/cn' },
         ],
 
         sidebar: [
@@ -66,6 +67,7 @@ export default defineConfig({
           {
             text: '进阶',
             items: [
+              { text: '配置', link: '/cn/config' },
               { text: '常见问题', link: '/cn/faq' },
             ]
           }
