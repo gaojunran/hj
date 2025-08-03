@@ -249,6 +249,30 @@ hj split -r A -d B
 
 更多用法参见 [jj split](https://jj-vcs.github.io/jj/latest/cli-reference/#jj-split)。
 
+## 复制提交
+
+::: details 对于熟悉 git 的用户
+
+`hj duplicate` 近似于 `git cherry-pick`，但是可以将新提交放到任意位置。
+
+:::
+
+::: details 对于熟悉 jj 的用户
+
+`hj duplicate` 和 `jj duplicate` 完全等价。
+
+:::
+
+`duplicate` 命令可以将一个提交复制一份，放到另一个提交之上：
+
+```sh
+hj duplicate REVSET -d B
+```
+
+这将把提交 `REVSET` 复制一份，放到提交 `B` 之上。
+
+更多用法参见 [jj duplicate](https://jj-vcs.github.io/jj/latest/cli-reference/#jj-duplicate)。
+
 ## 移动提交的位置
 
 ::: details 对于熟悉 git 的用户

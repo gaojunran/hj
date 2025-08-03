@@ -4,7 +4,7 @@
 
 Fast, opinionated version control experience. Powered by [jj-vcs](https://github.com/jj-vcs/jj).
 
-## Goals
+## Features
 
 - ⚡️ Minimal Commands
 

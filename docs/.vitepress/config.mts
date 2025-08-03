@@ -58,9 +58,9 @@ export default defineConfig({
             items: [
               { text: '初始化仓库', link: '/cn/init' },
               { text: '克隆和下载仓库', link: '/cn/clone' },
-              { text: '查看仓库状态', link: '/cn/status' },
+              { text: '查看状态', link: '/cn/status' },
               { text: '提交', link: '/cn/commit' },
-              { text: '分支', link: '/cn/branch' },
+              { text: '分支/书签', link: '/cn/branch' },
               { text: '拉取和推送', link: '/cn/pull-push' },
             ]
           },

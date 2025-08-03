@@ -49,6 +49,14 @@ hj push main --pull
 
 hj 将不断进步！💪🏻
 
+## 为什么不向 jj 贡献代码，而是直接封装 jj ？
+
+jj 是一个有着优秀设计理念的工具，为了保持其功能的[正交性](https://en.wikipedia.org/wiki/Orthogonality#Computer_science)，不可避免地要提供尽量 **通用** 的工具，以满足所有用户的版本控制需求。
+
+hj 的理念有所不同，「简单」是我们的第一设计理念。我们封装了许多有用的子命令使得你可以以 **最小的心智负担** 来完成 Git 和 jj 中复杂的操作。目前我们的工具是对多个命令行工具的组合，以可维护性极强的 Rust 脚本形式为您提供。
+
+我们额外提供的功能中，我确信有很多功能 jj 在短期内一定不会提供，甚至永远不会提供，因为这些功能与 jj 的设计理念相悖。如果你追求简单，不妨来尝试一下我们的工具。 💪🏻
+
 ## 目前存在哪些已知缺陷？
 
 - `hj undo` 是基于 `jj undo` 的。而 hj 的很多操作不是原子化的，例如 `hj switch` 内部执行了两行 jj 命令，所以 `hj undo` 不能够完全撤销一个操作。未来我们会根据 `hj op restore` 封装一个命令。
@@ -57,7 +65,13 @@ hj 将不断进步！💪🏻
 
 - hj 的很多改变工作副本指向的操作不会自动推进书签。这是 jj 的特意设计，hj 正在尝试解决。
 
-- hj 还没有发布各架构的 Release。现在你仅能通过 `cargo install --path .` 来安装。
+- hj 
+
+- hj 目前仅在 GitHub 中发布各架构的 Release。除了从 GitHub 手动下载二进制文件外，你仅能通过 `cargo install --path .` 来从源码编译。未来我们将会至少支持以下安装方式： 
+  - [scoop](https://scoop.sh/) (Windows)、
+  - PowerShell script (Windows)、
+  - [homebrew](https://brew.sh/) (macOS, Linux X86)、
+  - bash script (Unix，包括 WSL, Linux 和 macOS)。
 
 ## 路线图
 
@@ -69,6 +83,7 @@ hj 将不断进步！💪🏻
 - 🚧　`hj commit` 和 `hj describe` 时支持打开编辑器进行多行描述的编辑。
 - 🚧　`hj rollback`：交互式选择要回退的命令。
 - 🚧　优化与 Git 仓库共存时的体验。
+- 🚧　发布到 scoop、homebrew；编写 PowerShell script 和 bash script。
 
 ## hj 是如何实现的？
 
