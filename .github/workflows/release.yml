@@ -8,8 +8,8 @@ on:
 env:
   PROJECT_NAME: hj  
 
-permissions:
-  contents: write
+permissions: read-all
+
 
 jobs:
   build:
@@ -98,6 +98,8 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Download all artifacts
