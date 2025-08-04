@@ -27,7 +27,7 @@ use crate::{
     download::command_download,
     init::command_init,
     keepup::command_keepup,
-    log::command_log_all,
+    log::{command_log_all, command_log_wip},
     open::command_open,
     pull::command_pull,
     push::command_push,
@@ -172,8 +172,15 @@ enum Commands {
     },
 
     /// Log all commits.
-    #[command(aliases = ["lg", "all"])]
+    #[command(aliases = ["all"])]
     LogAll,
+
+    /// Log all wip(working in progress) commits.
+    #[command(aliases = ["wip"])]
+    LogWip {
+        #[arg(short, long)]
+        patch: bool,
+    },
 
     /// Open root with your default editor.
     #[command(alias = "o")]
@@ -336,6 +343,11 @@ fn main() {
         }
         Commands::LogAll => {
             if let Err(e) = command_log_all(&config) {
+                error(&e.to_string());
+            }
+        }
+        Commands::LogWip { patch } => {
+            if let Err(e) = command_log_wip(&config, *patch) {
                 error(&e.to_string());
             }
         }
