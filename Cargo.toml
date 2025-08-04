@@ -1,7 +1,9 @@
 [package]
-name = "hj"
-version = "0.1.0"
+name = "hj-vcs"
+version = "0.1.12"
 edition = "2024"
+repository = "https://github.com/gaojunran/hj"
+documentation = "https://hj-vcs.netlify.app"
 
 [dependencies]
 anyhow = "1.0.98"
