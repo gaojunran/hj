@@ -165,10 +165,10 @@ enum Commands {
     /// Switch to a branch.
     #[command(alias = "sw")]
     Switch {
-        branch: String,
-        /// whether to keepup or not
-        #[arg(short, long)]
-        keepup: bool,
+        /// The branches to switch from (we will keepup them)
+        keepup_branch: Vec<String>,
+        /// The branch to switch to.
+        dest_branch: String,
     },
 
     /// Log all commits.
@@ -258,12 +258,12 @@ fn main() {
         };
         std::process::exit(0);
     }
-    if config.shortcut_branches.contains(&subcommand) {
-        if let Err(e) = command_switch(&config, subcommand, true, check_dot_git()) {
-            error(&e.to_string());
-        }
-        std::process::exit(0);
-    }
+    // if config.shortcut_branches.contains(&subcommand) {
+    //     if let Err(e) = command_switch(&config, subcommand, true, check_dot_git()) {
+    //         error(&e.to_string());
+    //     }
+    //     std::process::exit(0);
+    // }
     let cli = Cli::parse();
     match &cli.command {
         Commands::Init {
@@ -336,8 +336,13 @@ fn main() {
                 error(&e.to_string());
             }
         }
-        Commands::Switch { branch, keepup } => {
-            if let Err(e) = command_switch(&config, branch.clone(), *keepup, check_dot_git()) {
+        Commands::Switch {
+            keepup_branch,
+            dest_branch,
+        } => {
+            if let Err(e) =
+                command_switch(&config, keepup_branch, dest_branch.clone(), check_dot_git())
+            {
                 error(&e.to_string());
             }
         }
