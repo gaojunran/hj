@@ -80,10 +80,12 @@ hj 的理念有所不同，「简单」是我们的第一设计理念。我们�
 - 🚧　`hj download` 下载单个文件(夹) 时直接下载到指定的目录，而不包含远程仓库中的文件夹结构。
 - 🚧　`hj init` 时支持下载 `.gitignore`。（[来源](https://github.com/github/gitignore)）
 - 🚧　全面支持 GitLab。
-- 🚧　`hj commit` 和 `hj describe` 时支持打开编辑器进行多行描述的编辑。
+- ✅　`hj commit` 和 `hj describe` 时支持打开编辑器进行多行描述的编辑。
 - 🚧　`hj rollback`：交互式选择要回退的命令。
 - 🚧　优化与 Git 仓库共存时的体验。
 - 🚧　发布到 scoop、homebrew；编写 PowerShell script 和 bash script。
+- 🚧　提供更多与 `hj log` 相关的简化命令。
+- 🚧　提供 Hooks 支持。
 
 ## hj 是如何实现的？
 
