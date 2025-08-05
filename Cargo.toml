@@ -7,6 +7,11 @@ edition = "2024"
 repository = "https://github.com/gaojunran/hj"
 documentation = "https://hj-vcs.netlify.app"
 
+[[bin]]
+name = "hj"
+path = "src/main.rs"
+
+
 [dependencies]
 anyhow = "1.0.98"
 clap = { version = "4.5.40", features = ["derive"] }
