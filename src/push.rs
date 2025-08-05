@@ -9,7 +9,7 @@ pub(crate) fn command_push(
     config: &AppConfig,
     branch: &Vec<String>,
     change: &Vec<String>,
-    keepup: bool,
+    still: bool, // do not keepup. often seen in stacked prs.
     pull: bool,
     upbase: bool,
 ) -> anyhow::Result<()> {
@@ -35,8 +35,8 @@ pub(crate) fn command_push(
     }
 
     // keepup if needed
-    if config.push_config.keepup || keepup {
-        step("Keepup bookmark(s)...");
+    if !(config.push_config.still || still) {
+        step("Keepup bookmarks...");
         command_keepup(config, branch)?;
     }
 

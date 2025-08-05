@@ -108,9 +108,9 @@ enum Commands {
         #[arg(short, long)]
         change: Vec<String>,
 
-        /// Whether to keepup or not. (by default true)
+        /// Prevent `keepup`ing or not.
         #[arg(short, long)]
-        keepup: bool,
+        still: bool,
 
         /// Whether to pull before pushing. If given, the argument `branch` only accepts SINGLE branch.
         #[arg(short, long)]
@@ -302,11 +302,11 @@ fn main() {
         Commands::Push {
             branch,
             change,
-            keepup,
+            still,
             pull,
             upbase,
         } => {
-            if let Err(e) = command_push(&config, branch, change, *keepup, *pull, *upbase) {
+            if let Err(e) = command_push(&config, branch, change, *still, *pull, *upbase) {
                 error(&e.to_string());
             }
         }

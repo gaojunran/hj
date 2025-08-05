@@ -28,8 +28,8 @@ pub struct InitConfig {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct PushConfig {
-    /// when pushing a branch, whether to keep up the specific bookmark to `@-` or not.
-    pub keepup: bool,
+    /// do not keepup by default
+    pub still: bool,
     pub pull: bool,
     pub upbase: bool,
 }
@@ -119,7 +119,7 @@ impl Default for AppConfig {
                 create_github_repo: false,
             },
             push_config: PushConfig {
-                keepup: true,
+                still: false,
                 pull: false,
                 upbase: false,
             },
