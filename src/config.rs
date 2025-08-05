@@ -14,8 +14,9 @@ pub struct AppConfig {
     pub init_config: InitConfig,
     pub push_config: PushConfig,
     pub upbase_config: UpbaseConfig,
-    pub switch_config: SwitchConfig,
+    // pub switch_config: SwitchConfig,
     pub open_config: OpenConfig,
+    pub keepup_config: KeepupConfig,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -38,14 +39,19 @@ pub struct UpbaseConfig {
     pub fetch: bool,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-pub struct SwitchConfig {
-    pub keepup: bool,
-}
+// #[derive(Debug, Deserialize, Serialize)]
+// pub struct SwitchConfig {
+//     pub keepup: bool,
+// }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct OpenConfig {
     pub editor: Option<String>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct KeepupConfig {
+    pub avoid_trunk: bool,
 }
 
 impl Default for AppConfig {
@@ -117,9 +123,10 @@ impl Default for AppConfig {
                 pull: false,
                 upbase: false,
             },
-            switch_config: SwitchConfig { keepup: true },
+            // switch_config: SwitchConfig { keepup: true },
             upbase_config: UpbaseConfig { fetch: true },
             open_config: OpenConfig { editor: None },
+            keepup_config: KeepupConfig { avoid_trunk: false },
         }
     }
 }
