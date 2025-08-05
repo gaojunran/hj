@@ -25,7 +25,7 @@
 
 而且 jj 是另一套工具和使用理念，不论你是否学过 Git 都有着不小的学习成本。
 
-所以有了 hj，致力于基于 jj 的优秀理念，提供一个 90% 场景下极简的版本控制体验，降低你的学习成本（你甚至可以在不了解 Git 和 jj 的情况下上手），并且在一些特殊场景中你可以随时切换回 jj 进行操作。
+所以有了 hj，致力于基于 jj 的优秀理念，提供一个 90% 场景下极简的版本控制体验，降低你的学习成本（你甚至可以在不了解 Git 和 jj 的情况下上手），并且在一些特殊场景中你可以随时切换回 jj 进行操作。这符合 [渐进性](https://talks.antfu.me/2024/vue-amsterdam/) 的设计理念。
 
 让我们来举几个例子说明 hj 相较于 jj 的极简性：
 
@@ -51,11 +51,11 @@ hj 将不断进步！💪🏻
 
 ## 为什么不向 jj 贡献代码，而是直接封装 jj ？
 
-jj 是一个有着优秀设计理念的工具，为了保持其功能的[正交性](https://en.wikipedia.org/wiki/Orthogonality#Computer_science)，不可避免地要提供尽量 **通用** 的工具，以满足所有用户的版本控制需求。
+jj 是一个有着优秀设计理念的工具，为了保持其功能的 [正交性](https://en.wikipedia.org/wiki/Orthogonality#Computer_science)，不可避免地要提供尽量 **通用** 的工具，以满足所有用户的版本控制需求。
 
 hj 的理念有所不同，「简单」是我们的第一设计理念。我们封装了许多有用的子命令使得你可以以 **最小的心智负担** 来完成 Git 和 jj 中复杂的操作。目前我们的工具是对多个命令行工具的组合，以可维护性极强的 Rust 脚本形式为您提供。
 
-我们额外提供的功能中，我确信有很多功能 jj 在短期内一定不会提供，甚至永远不会提供，因为这些功能与 jj 的设计理念相悖。如果你追求简单，不妨来尝试一下我们的工具。 💪🏻
+我们额外提供的功能中，我确信其中有很多 jj 在短期内一定不会提供，甚至永远不会提供，因为这些功能与 jj 的设计理念相悖。如果你追求简单，不妨来尝试一下我们的工具。 💪🏻
 
 ## 目前存在哪些已知缺陷？
 
@@ -65,8 +65,6 @@ hj 的理念有所不同，「简单」是我们的第一设计理念。我们�
 
 - hj 的很多改变工作副本指向的操作不会自动推进书签。这是 jj 的特意设计，hj 正在尝试解决。
 
-- hj 
-
 - hj 目前仅在 GitHub 中发布各架构的 Release。除了从 GitHub 手动下载二进制文件外，你仅能通过 `cargo install --path .` 来从源码编译。未来我们将会至少支持以下安装方式： 
   - [scoop](https://scoop.sh/) (Windows)、
   - PowerShell script (Windows)、
@@ -75,16 +73,18 @@ hj 的理念有所不同，「简单」是我们的第一设计理念。我们�
 
 ## 路线图
 
-- 🚧　涉及 `gh` CLI 的命令支持省略 `owner`，默认为当前登录的用户。
-- 🚧　`hj clone --fork`
-- 🚧　`hj download` 下载单个文件(夹) 时直接下载到指定的目录，而不包含远程仓库中的文件夹结构。
-- 🚧　`hj init` 时支持下载 `.gitignore`。（[来源](https://github.com/github/gitignore)）
-- 🚧　全面支持 GitLab。
+> ✅ 表示已经实现，🚧 表示正在实现，🤔 表示未来计划。你也可以在 [Issues](https://github.com/gaojunran/hj/issues) 里提出你的想法！
+
+- 🤔　涉及 `gh` CLI 的命令支持省略 `owner`，默认为当前登录的用户。
+- 🤔　`hj clone --fork`
+- 🤔　`hj download` 下载单个文件(夹) 时直接下载到指定的目录，而不包含远程仓库中的文件夹结构。
+- 🤔　`hj init` 时支持下载 `.gitignore`。（[来源](https://github.com/github/gitignore)）
+- 🤔　全面支持 GitLab。
 - ✅　`hj commit` 和 `hj describe` 时支持打开编辑器进行多行描述的编辑。
-- 🚧　`hj rollback`：交互式选择要回退的命令。
-- 🚧　优化与 Git 仓库共存时的体验。
-- 🚧　发布到 scoop、homebrew；编写 PowerShell script 和 bash script。
-- 🚧　提供更多与 `hj log` 相关的简化命令。
+- 🤔　`hj rollback`：交互式选择要回退的命令。
+- 🤔　优化与 Git 仓库共存时的体验。
+- 🤔　发布到 scoop、homebrew；编写 PowerShell script 和 bash script。
+- 🤔　提供更多与 `hj log` 相关的简化命令。
 - 🚧　提供 Hooks 支持。
 
 ## hj 是如何实现的？

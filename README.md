@@ -19,9 +19,3 @@ Fast, opinionated version control experience. Powered by [jj-vcs](https://github
   Get started easily without any knowledge of Git or jj-vcs.
 
 MAKE **VERSION CONTROL** GREAT AGAIN!
-
-## Now you can try hj ...
-
-```bash
-cargo install --path .
-```

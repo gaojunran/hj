@@ -56,6 +56,7 @@ export default defineConfig({
           {
             text: '快速上手',
             items: [
+              { text: '安装 hj', link: '/cn/install-hj' },
               { text: '初始化仓库', link: '/cn/init' },
               { text: '克隆和下载仓库', link: '/cn/clone' },
               { text: '查看状态', link: '/cn/status' },

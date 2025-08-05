@@ -44,8 +44,16 @@ git checkout main
 `hj switch main` 命令实际上执行的是：
 
 ```sh
-hj keepup  # jj bookmark move --from "heads(::@- & bookmarks())" --to @-
-jj edit "latest(main+)" 
+hj keepup  # 内部调用 `jj bookmark move`
+
+# 检查目标书签的子提交中，有几个描述为空的提交
+jj log -r "((main+) ~ bookmarks()) & description(exact:\"\")" 
+
+# 如果数量为 0，则：
+jj new main
+
+# 如果数量大于 0，则：
+jj edit "latest(((main+) ~ bookmarks()) & description(exact:\"\"))" 
 ```
 
 如果目标分支存在多个工作副本提交，`hj switch` 默认会选择最新的一个。
