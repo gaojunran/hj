@@ -6,7 +6,7 @@ pub(crate) fn command_open(config: &AppConfig, remote: Option<String>) -> anyhow
     match remote {
         None => {
             let path = cmd!("jj", "root").read()?;
-            if let Some(editor) = &config.open_config.editor {
+            if let Some(editor) = &config.open.editor {
                 cmd!(editor, path).run()?;
                 return Ok(());
             }

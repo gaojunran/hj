@@ -27,7 +27,7 @@ jj git push --allow-new --bookmark main
 你也可以禁用自动移动书签功能（这个功能在绝大多数场景下是有用的）：
 
 ```sh
-HJ_PUSH_CONFIG_KEEPUP=false hj push main
+HJ_PUSH_KEEPUP=false hj push main
 ```
 
 我注意到 jj 中有一个 [PR](https://github.com/jj-vcs/jj/pull/3129) 实现了一个实验性的自动推进书签功能。当它稳定之后，我会修改 hj 的逻辑。
@@ -143,14 +143,14 @@ git rebase main
 `hj upbase` 的实际操作是：
 
 ```sh
-jj git fetch   # 可以通过 upbase_config.fetch 配置项禁用
+jj git fetch   # 可以通过 upbase.fetch 配置项禁用
 jj rebase -d "trunk()" -s "all:(::trunk())+ & mutable()"
 ```
 
 `hj upbase featA featB` 的实际操作是：
 
 ```sh
-jj git fetch   # 可以通过 upbase_config.fetch 配置项禁用
+jj git fetch   # 可以通过 upbase.fetch 配置项禁用
 jj rebase -d "trunk()" -s featA
 jj rebase -d "trunk()" -s featB
 ```

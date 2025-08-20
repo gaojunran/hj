@@ -32,10 +32,20 @@ hj clone https://github.com/gaojunran/hj.git
 hj clone gaojunran/hj
 ```
 
-这建立在默认 host 是 `github.com` 的前提下。你可以通过 [覆写环境变量](/cn/config) 来修改默认行为：
+这建立在默认 host 是 `github.com` 的前提下。你可以通过 [配置项](/cn/config) 来修改默认行为：
+
+```toml
+# ./hj.toml
+[clone]
+default_host = "gitlab.com"
+default_user = "gaojunran"
+```
+
+配置了 `default_user` 后，你可以省略用户名：
 
 ```sh
-HJ__DEFAULT_HOST=gitlab.com hj clone gaojunran/hj
+hj clone gaojunran/hj  # 默认 host 是 gitlab.com
+hj clone hj # 默认 user 是 gaojunran
 ```
 
 ---

@@ -5,7 +5,7 @@ use crate::config::AppConfig;
 pub(crate) fn command_keepup(config: &AppConfig, branch: &Vec<String>) -> anyhow::Result<()> {
     let target = "heads(::@ & mutable() & ~description(exact:\"\") & (~empty() | merges()))";
     if branch.is_empty() {
-        let source = if config.keepup_config.avoid_trunk {
+        let source = if config.keepup.avoid_trunk {
             "heads(::@ & (bookmarks() ~ trunk()))"
         } else {
             "heads(::@ & bookmarks())"

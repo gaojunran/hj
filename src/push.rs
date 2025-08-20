@@ -35,7 +35,7 @@ pub(crate) fn command_push(
     }
 
     // keepup if needed
-    if !(config.push_config.still || still) {
+    if !(config.push.still || still) {
         step("Keepup bookmarks...");
         command_keepup(config, branch)?;
     }

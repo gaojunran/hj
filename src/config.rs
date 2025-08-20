@@ -11,18 +11,19 @@ pub struct AppConfig {
     pub fallback_commands: Vec<String>,
     pub shortcut_branches: Vec<String>,
     pub always_colocate: bool,
-    pub clone_config: CloneConfig,
-    pub init_config: InitConfig,
-    pub push_config: PushConfig,
-    pub upbase_config: UpbaseConfig,
-    // pub switch_config: SwitchConfig,
-    pub open_config: OpenConfig,
-    pub keepup_config: KeepupConfig,
+    pub clone: CloneConfig,
+    pub init: InitConfig,
+    pub push: PushConfig,
+    pub upbase: UpbaseConfig,
+    // pub switch: SwitchConfig,
+    pub open: OpenConfig,
+    pub keepup: KeepupConfig,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct CloneConfig {
     pub default_host: String,
+    pub default_user: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -118,23 +119,24 @@ impl Default for AppConfig {
                 .map(|item| item.to_string())
                 .collect(),
             always_colocate: false,
-            clone_config: CloneConfig {
+            clone: CloneConfig {
                 default_host: "github.com".to_string(),
+                default_user: None,
             },
-            init_config: InitConfig {
+            init: InitConfig {
                 default_remote_name: "origin".to_string(),
                 default_branch: "main".to_string(),
                 create_github_repo: false,
             },
-            push_config: PushConfig {
+            push: PushConfig {
                 still: false,
                 pull: false,
                 upbase: false,
             },
-            // switch_config: SwitchConfig { keepup: true },
-            upbase_config: UpbaseConfig { fetch: true },
-            open_config: OpenConfig { editor: None },
-            keepup_config: KeepupConfig { avoid_trunk: false },
+            // switch: SwitchConfig { keepup: true },
+            upbase: UpbaseConfig { fetch: true },
+            open: OpenConfig { editor: None },
+            keepup: KeepupConfig { avoid_trunk: false },
         }
     }
 }

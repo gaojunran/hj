@@ -12,7 +12,7 @@ pub(crate) fn command_upbase(
 ) -> anyhow::Result<()> {
     // we only need fetch, not pull,
     // because we assume the trunk() has no local changes
-    if fetch || config.upbase_config.fetch {
+    if fetch || config.upbase.fetch {
         step("Fetching remote changes...");
         cmd!("jj", "git", "fetch").run()?;
     }

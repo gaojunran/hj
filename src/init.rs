@@ -34,13 +34,13 @@ pub(crate) fn command_init(
     }
 
     if !already_init {
-        let default_branch = config.init_config.default_branch.clone();
+        let default_branch = config.init.default_branch.clone();
         step(format!("Setting default branch to `{default_branch}`...").as_str());
         cmd!("jj", "bookmark", "set", "-r", "@", default_branch).read()?;
     }
 
     // TODO: add a flag --no-github
-    if config.init_config.create_github_repo || github {
+    if config.init.create_github_repo || github {
         step("Creating GitHub repository...");
         let dirname = std::env::current_dir()?
             .file_name()
@@ -66,7 +66,7 @@ pub(crate) fn command_init(
                 "git",
                 "remote",
                 "add",
-                config.init_config.default_remote_name.clone(),
+                config.init.default_remote_name.clone(),
                 remote_url
             )
             .read()?;

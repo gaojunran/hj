@@ -19,9 +19,9 @@ pub(crate) fn command_commit(
             config,
             &Vec::new(), // auto select what to push
             &Vec::new(), // no changes should be given
-            config.push_config.still,
-            config.push_config.pull,
-            config.push_config.upbase,
+            config.push.still,
+            config.push.pull,
+            config.push.upbase,
         )?;
     }
     Ok(())
