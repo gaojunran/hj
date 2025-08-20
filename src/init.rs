@@ -1,3 +1,6 @@
+use std::{fs, path::Path};
+
+use anyhow::{Context, bail};
 use duct::cmd;
 use regex::Regex;
 
@@ -10,19 +13,25 @@ pub(crate) fn command_init(
     colocate: bool,
 ) -> anyhow::Result<()> {
     let mut already_init = false;
-    step("Initializing jj repository...");
-    let args = if colocate || config.always_colocate {
-        vec!["git", "init", "--colocate"]
+    if colocate && Path::new(".jj").exists() && !Path::new(".git").exists() {
+        step("Converting into colocated repository...");
+        convert_into_colocated()?;
+        already_init = true;
     } else {
-        vec!["git", "init"]
-    };
-    if let Err(e) = cmd("jj", args).run() {
-        if github {
-            already_init = true;
+        step("Initializing jj repository...");
+        let args = if colocate || config.always_colocate {
+            vec!["git", "init", "--colocate"]
         } else {
-            anyhow::bail!("Failed to initialize jj repository: {e}");
-        }
-    };
+            vec!["git", "init"]
+        };
+        if let Err(e) = cmd("jj", args).run() {
+            if github {
+                already_init = true;
+            } else {
+                anyhow::bail!("Failed to initialize jj repository: {e}");
+            }
+        };
+    }
 
     if !already_init {
         let default_branch = config.init_config.default_branch.clone();
@@ -67,6 +76,42 @@ pub(crate) fn command_init(
             );
         }
     }
+    Ok(())
+}
+
+fn convert_into_colocated() -> anyhow::Result<()> {
+    // 1) # Ignore the .jj directory in Git
+    // echo '/*' > .jj/.gitignore
+    fs::write(".jj/.gitignore", "/*\n").context("write .jj/.gitignore")?;
+
+    // 2) # Move the Git repo
+    // mv .jj/repo/store/git .git
+    let src_git = Path::new(".jj/repo/store/git");
+    let dst_git = Path::new(".git");
+    if !src_git.exists() {
+        bail!("source Git dir not found: {}", src_git.display());
+    }
+    if dst_git.exists() {
+        bail!(".git already exists; abort to avoid clobbering");
+    }
+    fs::create_dir_all(".jj/repo/store").context("ensure .jj/repo/store")?;
+    fs::rename(src_git, dst_git)
+        .with_context(|| format!("rename {} -> {}", src_git.display(), dst_git.display()))?;
+
+    // 3) # Tell jj where to find it (do not use on Windows! See below.)
+    // echo -n '../../../.git' > .jj/repo/store/git_target
+    fs::write(".jj/repo/store/git_target", b"../../../.git")
+        .context("write .jj/repo/store/git_target")?;
+
+    // 4) # Make the Git repository non-bare and set HEAD
+    // git config --unset core.bare
+    let _ = cmd!("git", "config", "--unset", "core.bare").run();
+
+    // 5) # Convince jj to update .git/HEAD to point to the working-copy commit's parent
+    // jj new && jj undo
+    cmd!("jj", "new").run().context("jj new failed")?;
+    cmd!("jj", "undo").run().context("jj undo failed")?;
+
     Ok(())
 }
 

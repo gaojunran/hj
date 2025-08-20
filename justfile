@@ -30,7 +30,7 @@ install:
   cargo install --path .
 
 doc:
-  cd docs && pnpm run docs:dev
+  cd docs && pnpm install && pnpm run docs:dev
 
 stat:
   cd src && tokei .

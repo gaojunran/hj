@@ -70,6 +70,18 @@ hj init --github
 hj init --git
 ```
 
+:::tip 逻辑细节
+
+以下表格展示了 `hj init` 命令的具体细节：
+
+| 参数 | 仅 `.jj` 存在 | 仅 `.git` 存在 | `.jj` 和 `.git` 均存在 | `.jj` 和 `.git` 均不存在 |
+| --- | --- | --- | --- | --- |
+| 无参数 | <span style="color: #FAD689">命令失败，已初始化</span> | 初始化一个空 jj 仓库 | <span style="color: #FAD689">命令失败，已初始化</span> | 初始化一个空 jj 仓库 |
+| `--git` | [基于已存在的 jj 仓库，初始化 Git 仓库](https://jj-vcs.github.io/jj/v0.32.0/git-compatibility/#converting-a-repo-into-a-co-located-repo) | 基于已存在的 Git 仓库，初始化 jj 仓库 | <span style="color: #FAD689">命令失败，已初始化</span> | 初始化一个空 jj 仓库和一个空 Git 仓库
+| `--github` | 跳过新建本地仓库的步骤 | - | 跳过新建本地仓库的步骤 | -
+
+:::
+
 ---
 
 ## 打开项目
