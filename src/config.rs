@@ -7,16 +7,22 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct AppConfig {
     pub check_gh: bool,
-    pub default_host: String,
+    // pub hosts: Vec<String>,
     pub fallback_commands: Vec<String>,
     pub shortcut_branches: Vec<String>,
     pub always_colocate: bool,
+    pub clone_config: CloneConfig,
     pub init_config: InitConfig,
     pub push_config: PushConfig,
     pub upbase_config: UpbaseConfig,
     // pub switch_config: SwitchConfig,
     pub open_config: OpenConfig,
     pub keepup_config: KeepupConfig,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct CloneConfig {
+    pub default_host: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -58,7 +64,6 @@ impl Default for AppConfig {
     fn default() -> Self {
         AppConfig {
             check_gh: true,
-            default_host: "github.com".to_string(),
             fallback_commands: [
                 "abandon",
                 "absorb",
@@ -113,6 +118,9 @@ impl Default for AppConfig {
                 .map(|item| item.to_string())
                 .collect(),
             always_colocate: false,
+            clone_config: CloneConfig {
+                default_host: "github.com".to_string(),
+            },
             init_config: InitConfig {
                 default_remote_name: "origin".to_string(),
                 default_branch: "main".to_string(),

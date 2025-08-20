@@ -235,7 +235,6 @@ fn main() {
         return;
     }
     if let Err(e) = check_gh_installed()
-        && config.default_host == "github.com"
         && config.check_gh
     {
         warning(&e.to_string());
