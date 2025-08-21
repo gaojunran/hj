@@ -81,41 +81,41 @@ fn download_recursive(client: &Client, url: &str, out_path: &Path) -> Result<()>
                 let sub_path = out_path.join(&entry.name);
                 create_dir_all(&sub_path)?;
                 download_recursive(client, &entry.url, &sub_path)?;
-            } else if entry.kind == "file" {
-                if let Some(dl_url) = entry.download_url {
-                    let content = client
-                        .get(&dl_url)
-                        // .header("User-Agent", "rust-client")
-                        .send()?
-                        .error_for_status()?;
-                    let bytes = content.bytes()?;
-                    let file_path = out_path.join(&entry.name);
-                    if let Some(parent) = file_path.parent() {
-                        create_dir_all(parent)?;
-                    }
-                    let mut f = File::create(file_path)?;
-                    f.write_all(&bytes)?;
-                    println!("+ {}", entry.path);
-                }
-            }
-        }
-    } else {
-        let entry: GithubEntry = serde_json::from_str(&text)?;
-        if entry.kind == "file" {
-            if let Some(dl_url) = entry.download_url {
+            } else if entry.kind == "file"
+                && let Some(dl_url) = entry.download_url
+            {
                 let content = client
                     .get(&dl_url)
                     // .header("User-Agent", "rust-client")
                     .send()?
                     .error_for_status()?;
                 let bytes = content.bytes()?;
-                if let Some(parent) = out_path.parent() {
+                let file_path = out_path.join(&entry.name);
+                if let Some(parent) = file_path.parent() {
                     create_dir_all(parent)?;
                 }
-                let mut f = File::create(out_path)?;
+                let mut f = File::create(file_path)?;
                 f.write_all(&bytes)?;
                 println!("+ {}", entry.path);
             }
+        }
+    } else {
+        let entry: GithubEntry = serde_json::from_str(&text)?;
+        if entry.kind == "file"
+            && let Some(dl_url) = entry.download_url
+        {
+            let content = client
+                .get(&dl_url)
+                // .header("User-Agent", "rust-client")
+                .send()?
+                .error_for_status()?;
+            let bytes = content.bytes()?;
+            if let Some(parent) = out_path.parent() {
+                create_dir_all(parent)?;
+            }
+            let mut f = File::create(out_path)?;
+            f.write_all(&bytes)?;
+            println!("+ {}", entry.path);
         }
     }
     Ok(())
