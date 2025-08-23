@@ -12,6 +12,7 @@ pub(crate) fn command_init(
     private: bool,
     colocate: bool,
 ) -> anyhow::Result<()> {
+    let colocate = colocate || Path::new(".git").exists() || config.always_colocate;
     let mut already_init = false;
     if colocate && Path::new(".jj").exists() && !Path::new(".git").exists() {
         step("Converting into colocated repository...");
@@ -19,7 +20,7 @@ pub(crate) fn command_init(
         already_init = true;
     } else {
         step("Initializing jj repository...");
-        let args = if colocate || config.always_colocate {
+        let args = if colocate {
             vec!["git", "init", "--colocate"]
         } else {
             vec!["git", "init"]

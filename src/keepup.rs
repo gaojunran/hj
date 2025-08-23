@@ -13,6 +13,7 @@ pub(crate) fn command_keepup(config: &AppConfig, branch: &Vec<String>) -> anyhow
         cmd!("jj", "bookmark", "move", "--from", source, "--to", target).run()?;
         // from https://github.com/jj-vcs/jj/discussions/5568
         // and https://github.com/jj-vcs/jj/discussions/5568#discussioncomment-13007551
+        // FIXME: If keepup is not needed, now it will report error instead of a more friendly message.
     } else {
         for bookmark in branch {
             cmd!("jj", "bookmark", "set", "-r", target, bookmark).run()?;

@@ -58,9 +58,19 @@ hj init --github
 
 :::details 对于熟悉 jj 的用户
 
-如果你是 jj 的老用户，你应该非常清楚 jj 目前的明确限制：缺乏命令行工具和 IDE 支持。你可以通过 jj 的 `--colocate` 参数来实现共存，我们在 hj 中也为你提供了。
+如果你是 jujutsu 的老用户，你应该非常清楚 jujutsu 目前的明确限制：缺乏命令行工具和 IDE 支持。你可以通过 jj 的 `--colocate` 参数来实现共存，我们在 hj 中也为你提供了。
 
 目前 共存 存在 [已知限制](https://jj-vcs.github.io/jj/latest/git-compatibility/#co-located-jujutsugit-repos)。
+
+相比于 jujutsu 的共存，我们有两个改进：
+
+- 当未指定 `--colocate` 但仓库中仅存在 `.git` 仓库而不存在 `.jj` 仓库时，hj 会隐式地使用 `--colocate` 参数，而不会拒绝创建仓库。当然，如果你想忽略原来的 `.git` 仓库并重新创建一个空 `.jj` 仓库，只需执行：
+
+```sh
+mv .git .git.bak
+```
+
+- 当指定 `--colocate` 但仓库中仅存在 `.jj` 仓库而不存在 `.git` 仓库时，hj 会从 `.jj` 仓库中导出 `.git` 仓库，放在当前文件夹下。
 
 :::
 
@@ -76,7 +86,7 @@ hj init --git
 
 | 参数 | 仅 `.jj` 存在 | 仅 `.git` 存在 | `.jj` 和 `.git` 均存在 | `.jj` 和 `.git` 均不存在 |
 | --- | --- | --- | --- | --- |
-| 无参数 | <span style="color: #FAD689">命令失败，已初始化</span> | 初始化一个空 jj 仓库 | <span style="color: #FAD689">命令失败，已初始化</span> | 初始化一个空 jj 仓库 |
+| 无参数 | <span style="color: #FAD689">命令失败，已初始化</span> | 基于已存在的 Git 仓库，初始化 jj 仓库 | <span style="color: #FAD689">命令失败，已初始化</span> | 初始化一个空 jj 仓库 |
 | `--git` | [基于已存在的 jj 仓库，初始化 Git 仓库](https://jj-vcs.github.io/jj/v0.32.0/git-compatibility/#converting-a-repo-into-a-co-located-repo) | 基于已存在的 Git 仓库，初始化 jj 仓库 | <span style="color: #FAD689">命令失败，已初始化</span> | 初始化一个空 jj 仓库和一个空 Git 仓库
 | `--github` | 跳过新建本地仓库的步骤 | - | 跳过新建本地仓库的步骤 | -
 
