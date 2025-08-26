@@ -75,8 +75,8 @@ hj 的理念有所不同，「简单」是我们的第一设计理念。我们�
 
 > ✅ 表示已经实现，🚧 表示正在实现，🤔 表示未来计划。你也可以在 [Issues](https://github.com/gaojunran/hj/issues) 里提出你的想法！
 
-- 🤔　涉及 `gh` CLI 的命令支持省略 `owner`，默认为当前登录的用户。
-- 🤔　`hj clone --fork`
+- ✅　`clone` 支持省略 `owner`。
+- 🚧　`hj clone --fork`
 - 🤔　`hj download` 下载单个文件(夹) 时直接下载到指定的目录，而不包含远程仓库中的文件夹结构。
 - 🤔　`hj init` 时支持下载 `.gitignore`。（[来源](https://github.com/github/gitignore)）
 - 🤔　全面支持 GitLab。

@@ -19,3 +19,9 @@ Fast, opinionated version control experience. Powered by [jj-vcs](https://github
   Get started easily without any knowledge of Git or jj-vcs.
 
 MAKE **VERSION CONTROL** GREAT AGAIN!
+
+## Documentation
+
+https://hj-vcs.netlify.app/cn
+
+> English documents are working in progress! 🚧
