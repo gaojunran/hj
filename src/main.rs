@@ -84,6 +84,10 @@ enum Commands {
         /// Run `hj push` after committing.
         #[arg(short, long)]
         push: bool,
+
+        /// Abandon uncommitted changes.
+        #[arg(short, long)]
+        abandon: bool,
     },
 
     /// Download a repo without its version history.
@@ -142,6 +146,15 @@ enum Commands {
     Reset {
         from: Option<String>,
         /// force reset (allow mutate the immutable commit)
+        #[arg(short, long)]
+        force: bool,
+    },
+
+    /// Pick changes from a commit (by default working copy) and throw them away.
+    #[command(alias = "th")]
+    Throw {
+        from: Option<String>,
+        /// force throw (allow mutate the immutable commit)
         #[arg(short, long)]
         force: bool,
     },
@@ -283,8 +296,12 @@ fn main() {
                 error(&e.to_string());
             }
         }
-        Commands::Commit { message, push } => {
-            if let Err(e) = command_commit(&config, message.clone(), *push) {
+        Commands::Commit {
+            message,
+            push,
+            abandon,
+        } => {
+            if let Err(e) = command_commit(&config, message.clone(), *push, *abandon) {
                 error(&e.to_string());
             }
         }
@@ -360,5 +377,6 @@ fn main() {
                 error(&e.to_string());
             }
         }
+        Commands::Throw { from, force } => {}
     }
 }

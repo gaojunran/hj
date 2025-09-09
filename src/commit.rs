@@ -6,6 +6,7 @@ pub(crate) fn command_commit(
     config: &AppConfig,
     message: Option<String>,
     push: bool,
+    abandon: bool,
 ) -> anyhow::Result<()> {
     if let Some(msg) = message {
         cmd!("jj", "commit", "--interactive", "--message", msg).run()?;
@@ -23,6 +24,10 @@ pub(crate) fn command_commit(
             config.push.pull,
             config.push.upbase,
         )?;
+    }
+    if abandon {
+        step("Abandoning uncommitted changes...");
+        cmd!("jj", "abandon", "@").run()?;
     }
     Ok(())
 }
@@ -52,6 +57,22 @@ pub(crate) fn command_reset(from: Option<String>, force: bool) -> anyhow::Result
         from.as_deref().unwrap_or("@-"),
         "--into",
         "@",
+        if force { "--ignore-immutable" } else { "" },
+    ]
+    .into_iter()
+    .filter(|s| !s.is_empty())
+    .collect();
+
+    cmd("jj", &args).run()?;
+    Ok(())
+}
+
+pub(crate) fn command_throw(from: Option<String>, force: bool) -> anyhow::Result<()> {
+    let args: Vec<&str> = vec![
+        "restore",
+        "--interactive",
+        "--changes-in",
+        from.as_deref().unwrap_or("@"),
         if force { "--ignore-immutable" } else { "" },
     ]
     .into_iter()
