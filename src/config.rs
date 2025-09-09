@@ -11,6 +11,7 @@ pub struct AppConfig {
     pub fallback_commands: Vec<String>,
     pub shortcut_branches: Vec<String>,
     pub always_colocate: bool,
+    pub hooks: HookConfig,
     pub clone: CloneConfig,
     pub init: InitConfig,
     pub push: PushConfig,
@@ -59,6 +60,15 @@ pub struct OpenConfig {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct KeepupConfig {
     pub avoid_trunk: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct HookConfig {
+    pub use_just: bool,
+    pub pre_commit: Option<String>,
+    pub post_commit: Option<String>,
+    pub pre_push: Option<String>,
+    pub post_push: Option<String>,
 }
 
 impl Default for AppConfig {
@@ -137,6 +147,13 @@ impl Default for AppConfig {
             upbase: UpbaseConfig { fetch: true },
             open: OpenConfig { editor: None },
             keepup: KeepupConfig { avoid_trunk: false },
+            hooks: HookConfig {
+                use_just: false,
+                pre_commit: None,
+                post_commit: None,
+                pre_push: None,
+                post_push: None,
+            },
         }
     }
 }

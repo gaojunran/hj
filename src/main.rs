@@ -2,6 +2,7 @@ mod clone;
 mod commit;
 mod config;
 mod download;
+mod hook;
 mod init;
 mod keepup;
 mod log;

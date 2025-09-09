@@ -1,6 +1,6 @@
 use duct::cmd;
 
-use crate::{config::AppConfig, push::command_push, utils::step};
+use crate::{config::AppConfig, hook::run_hook, push::command_push, utils::step};
 
 pub(crate) fn command_commit(
     config: &AppConfig,
@@ -8,10 +8,16 @@ pub(crate) fn command_commit(
     push: bool,
     abandon: bool,
 ) -> anyhow::Result<()> {
+    if let Some(pre_commit) = &config.hooks.pre_commit {
+        run_hook(config, pre_commit.clone(), "pre-commit")?;
+    }
     if let Some(msg) = message {
         cmd!("jj", "commit", "--interactive", "--message", msg).run()?;
     } else {
         cmd!("jj", "commit", "--interactive").run()?;
+    }
+    if let Some(post_commit) = &config.hooks.post_commit {
+        run_hook(config, post_commit.clone(), "post-commit")?;
     }
     // TODO: should we give more options here?
     if push {

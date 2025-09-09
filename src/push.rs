@@ -1,8 +1,8 @@
 use duct::cmd;
 
 use crate::{
-    config::AppConfig, keepup::command_keepup, pull::command_pull, upbase::command_upbase,
-    utils::step,
+    config::AppConfig, hook::run_hook, keepup::command_keepup, pull::command_pull,
+    upbase::command_upbase, utils::step,
 };
 
 pub(crate) fn command_push(
@@ -27,6 +27,10 @@ pub(crate) fn command_push(
         command_upbase(config, branch, !pull)?; // if pull is true, then fetch is not needed
     }
 
+    if let Some(pre_push) = &config.hooks.pre_push {
+        run_hook(config, pre_push.clone(), "pre-push")?;
+    }
+
     let mut args = vec!["git", "push", "--allow-new"];
     if !branch.is_empty() {
         args.extend(branch.iter().flat_map(|i| ["--bookmark", i]));
@@ -43,6 +47,10 @@ pub(crate) fn command_push(
     // push command
     step("Pushing changes...");
     cmd("jj", args).run()?;
+
+    if let Some(post_push) = &config.hooks.post_push {
+        run_hook(config, post_push.clone(), "post-push")?;
+    }
 
     Ok(())
 }
