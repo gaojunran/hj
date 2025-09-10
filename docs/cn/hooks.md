@@ -57,6 +57,10 @@ lint:
 
 你可以参阅 [just 手册](https://just.systems/man/en/introduction.html) 来查看更多高级功能。
 
+## 失败的命令
+
+对于 `pre` 钩子，如果钩子命令失败，hj 会阻止版本控制命令的执行。
+
 ## 与 Git 的兼容性
 
 我们提供了运行 Git Hooks 相关的功能。在特定时期，hj 会自动运行：

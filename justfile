@@ -29,6 +29,9 @@ test:
 install:
   cargo install --path .
 
+post-commit: 
+  just --quiet install
+
 doc:
   cd docs && pnpm install && pnpm run docs:dev
 
