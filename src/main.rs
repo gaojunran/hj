@@ -89,6 +89,12 @@ enum Commands {
         /// Abandon uncommitted changes.
         #[arg(short, long)]
         abandon: bool,
+
+        #[arg(long)]
+        no_pre_hook: bool,
+
+        #[arg(long)]
+        no_post_hook: bool,
     },
 
     /// Download a repo without its version history.
@@ -124,6 +130,12 @@ enum Commands {
         /// Whether to upbase before pushing.
         #[arg(short, long)]
         upbase: bool,
+
+        #[arg(long)]
+        no_pre_hook: bool,
+
+        #[arg(long)]
+        no_post_hook: bool,
     },
 
     /// Pull changes from the remote.
@@ -301,8 +313,17 @@ fn main() {
             message,
             push,
             abandon,
+            no_pre_hook,
+            no_post_hook,
         } => {
-            if let Err(e) = command_commit(&config, message.clone(), *push, *abandon) {
+            if let Err(e) = command_commit(
+                &config,
+                message.clone(),
+                *push,
+                *abandon,
+                *no_pre_hook,
+                *no_post_hook,
+            ) {
                 error(&e.to_string());
             }
         }
@@ -322,8 +343,19 @@ fn main() {
             still,
             pull,
             upbase,
+            no_pre_hook,
+            no_post_hook,
         } => {
-            if let Err(e) = command_push(&config, branch, change, *still, *pull, *upbase) {
+            if let Err(e) = command_push(
+                &config,
+                branch,
+                change,
+                *still,
+                *pull,
+                *upbase,
+                *no_pre_hook,
+                *no_post_hook,
+            ) {
                 error(&e.to_string());
             }
         }

@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use duct::cmd;
 
 use crate::{config::AppConfig, utils::step};
@@ -11,7 +13,15 @@ pub(crate) fn run_hook(config: &AppConfig, script: String, hook_name: &str) -> a
         step("Install just to run hooks");
         // TODO: provide installation instructions
     }
-    step(&format!("Running {hook_name} hook"));
+    if Path::new(&format!(".git/hooks/{hook_name}")).exists()
+        && !config
+            .hooks
+            .ignore_git_hooks
+            .contains(&hook_name.to_string())
+    {
+        step(&format!("Running {hook_name} hook"));
+        cmd!("git", "hook", "run", hook_name).run()?;
+    }
     let (program, args): (&str, Vec<&str>) = script
         .split_once(' ')
         .map(|(p, a)| (p, a.trim().split(' ').collect()))

@@ -7,8 +7,12 @@ pub(crate) fn command_commit(
     message: Option<String>,
     push: bool,
     abandon: bool,
+    no_pre_hook: bool,
+    no_post_hook: bool,
 ) -> anyhow::Result<()> {
-    if let Some(pre_commit) = &config.hooks.pre_commit {
+    if let Some(pre_commit) = &config.hooks.pre_commit
+        && !no_pre_hook
+    {
         run_hook(config, pre_commit.clone(), "pre-commit")?;
     }
     if let Some(msg) = message {
@@ -16,7 +20,9 @@ pub(crate) fn command_commit(
     } else {
         cmd!("jj", "commit", "--interactive").run()?;
     }
-    if let Some(post_commit) = &config.hooks.post_commit {
+    if let Some(post_commit) = &config.hooks.post_commit
+        && !no_post_hook
+    {
         run_hook(config, post_commit.clone(), "post-commit")?;
     }
     // TODO: should we give more options here?
@@ -29,6 +35,8 @@ pub(crate) fn command_commit(
             config.push.still,
             config.push.pull,
             config.push.upbase,
+            false,
+            false,
         )?;
     }
     if abandon {

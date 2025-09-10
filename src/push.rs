@@ -12,6 +12,8 @@ pub(crate) fn command_push(
     still: bool, // do not keepup. often seen in stacked prs.
     pull: bool,
     upbase: bool,
+    no_pre_hook: bool,
+    no_post_hook: bool,
 ) -> anyhow::Result<()> {
     if pull {
         if branch.len() != 1 {
@@ -27,7 +29,9 @@ pub(crate) fn command_push(
         command_upbase(config, branch, !pull)?; // if pull is true, then fetch is not needed
     }
 
-    if let Some(pre_push) = &config.hooks.pre_push {
+    if let Some(pre_push) = &config.hooks.pre_push
+        && !no_pre_hook
+    {
         run_hook(config, pre_push.clone(), "pre-push")?;
     }
 
@@ -48,7 +52,9 @@ pub(crate) fn command_push(
     step("Pushing changes...");
     cmd("jj", args).run()?;
 
-    if let Some(post_push) = &config.hooks.post_push {
+    if let Some(post_push) = &config.hooks.post_push
+        && !no_post_hook
+    {
         run_hook(config, post_push.clone(), "post-push")?;
     }
 
