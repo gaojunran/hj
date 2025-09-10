@@ -10,6 +10,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use tar::Archive;
 
+use crate::clone::build_info;
 use crate::config::AppConfig;
 
 #[derive(Debug, Deserialize)]
@@ -30,7 +31,8 @@ pub(crate) fn command_download(
     destination: Option<&str>,
     entries: Vec<String>,
 ) -> Result<()> {
-    let (owner, repo) = parse_repo(source).context("Invalid URL or fullname")?;
+    let (_, owner, repo) = build_info("", config.clone.default_user.as_deref(), source)
+        .context("Invalid URL or fullname")?;
     let base_path = destination.unwrap_or(&repo);
 
     let mut headers = HeaderMap::new();

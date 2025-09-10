@@ -1,2 +1,2 @@
 [hooks]
-post_commit = "just install"  # use just to install hj to PATH automatically
+post_commit = "just post-commit"  # use just to install hj to PATH automatically

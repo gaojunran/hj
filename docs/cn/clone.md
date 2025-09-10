@@ -26,7 +26,9 @@ hj clone https://github.com/gaojunran/hj.git
 
 来克隆一个仓库。
 
-这样写并不简练！你可以用仓库全名来替代一个长 url：
+### 使用仓库全名替代 URL
+
+使用 URL 并不简练！你需要去网页中手动复制粘贴一个地址。你可以用仓库全名来替代一个长 URL：
 
 ```sh
 hj clone gaojunran/hj
@@ -48,7 +50,7 @@ hj clone gaojunran/hj  # 默认 host 是 gitlab.com
 hj clone hj # 默认 user 是 gaojunran
 ```
 
----
+### 指定目标文件夹
 
 也可以指定目标文件夹路径。默认是远程仓库的名字。如果你这样执行：
 
@@ -57,6 +59,16 @@ hj clone gaojunran/hj .  # 关注最后的 . 表示当前文件夹
 ```
 
 那么仓库内容将被克隆在当前文件夹内，而不是新建一个文件夹。
+
+### Fork 并克隆
+
+对于一个 GitHub 仓库，你可以用一行命令 Fork 某个仓库并克隆自己的分叉：
+
+```sh
+hj clone gaojunran/hj --fork
+```
+
+---
 
 ## 下载仓库
 

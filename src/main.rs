@@ -74,6 +74,10 @@ enum Commands {
         /// Whether to colocate or not.
         #[arg(short, long, alias = "git")]
         colocate: bool,
+
+        /// Fork a github repo and clone your fork
+        #[arg(short, long)]
+        fork: bool,
     },
 
     /// Create a commit.
@@ -304,8 +308,10 @@ fn main() {
             source,
             destination,
             colocate,
+            fork,
         } => {
-            if let Err(e) = command_clone(&config, source, destination.as_deref(), *colocate) {
+            if let Err(e) = command_clone(&config, source, destination.as_deref(), *colocate, *fork)
+            {
                 error(&e.to_string());
             }
         }

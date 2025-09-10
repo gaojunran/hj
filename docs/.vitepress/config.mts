@@ -77,7 +77,9 @@ export default defineConfig({
 
         socialLinks: [
           { icon: 'github', link: 'https://github.com/gaojunran/hj' }
-        ]
+        ],
+
+        outline: [2, 3]
       }
     }
   },
