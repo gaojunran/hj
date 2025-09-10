@@ -252,7 +252,7 @@ fn main() {
             let location = dirs::config_dir().unwrap()
                 .join("hj/config.toml");
             error(&err.to_string());
-            hint(&format!("You can put your configuration in {}, or use environment variables prefixed with `HJ_`.", location.display()));
+            hint(&format!("You can put your configuration in {}, or use environment variables prefixed with `HJ__`.", location.display()));
             std::process::exit(1)
         });
     if let Err(e) = check_jj_installed() {

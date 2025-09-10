@@ -65,6 +65,7 @@ pub struct KeepupConfig {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct HookConfig {
     pub use_just: bool,
+    #[serde(default)]
     pub ignore_git_hooks: Vec<String>,
     pub pre_commit: Option<String>,
     pub post_commit: Option<String>,
@@ -150,7 +151,7 @@ impl Default for AppConfig {
             keepup: KeepupConfig { avoid_trunk: false },
             hooks: HookConfig {
                 use_just: false,
-                ignore_git_hooks: [].to_vec(),
+                ignore_git_hooks: Vec::new(),
                 pre_commit: None,
                 post_commit: None,
                 pre_push: None,
