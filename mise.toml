@@ -1,0 +1,27 @@
+[tools]
+rust = "nightly"
+node = "22"
+pnpm = "latest"
+
+[tasks.install]
+description = "Install hj from local"
+run = "cargo install --path . --force"
+
+[tasks.lint]
+description = "Run linters"
+run = "cargo clippy --fix --allow-no-vcs"
+
+[tasks.docs]
+description = "Run docs"
+run = [
+  "pnpm install",
+  "pnpm run docs:dev",
+]
+dir = "docs"
+
+
+
+[tasks.stat]
+description = "Stat code lines"
+run = "tokei ."
+dir = "src"

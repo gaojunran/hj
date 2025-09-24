@@ -2,7 +2,7 @@ use duct::cmd;
 
 use crate::{
     config::AppConfig,
-    utils::{step, warning},
+    utils::step,
 };
 
 pub(crate) fn command_upbase(

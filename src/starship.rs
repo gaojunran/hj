@@ -17,7 +17,7 @@ pub fn current_branch() -> Option<String> {
 }
 
 mod test {
-    use super::*;
+    
 
     #[test]
     fn test_current_branch() {

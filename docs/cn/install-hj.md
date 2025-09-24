@@ -4,20 +4,20 @@
 [Jujutsu](https://github.com/jj-vcs/jj) 是 hj 的核心依赖。参阅 [安装 jj](https://jj-vcs.github.io/jj/latest/install-and-setup/)。
 :::
 
+## 使用 [mise](https://mise.jdx.dev) 安装（推荐）
+
+[mise](https://mise.jdx.dev) 是一个集开发工具安装、开发工具多版本管理、环境变量管理和任务管理为一体的工具 💪🏻，支持安装 GitHub Release Assets 中的二进制文件。
+
+```bash
+mise use github:gaojunran/hj
+```
+
 ## 使用 [stew](https://github.com/marwanhawari/stew) 安装
 
 [stew](https://github.com/marwanhawari/stew) 可以安装 GitHub Release Assets 中的二进制文件。
 
 ```bash
 stew install gaojunran/hj
-```
-
-## 使用 [mise](https://mise.jdx.dev) 安装
-
-[mise](https://mise.jdx.dev) 是一个集开发工具安装、开发工具多版本管理、环境变量管理和任务管理为一体的工具 💪🏻，支持安装 GitHub Release Assets 中的二进制文件。
-
-```bash
-mise use github:gaojunran/hj
 ```
 
 ## 使用 `cargo install` 手动编译

@@ -40,7 +40,7 @@ pre_commit = "npm run lint"
 - 编写脚本而不是命令；
 - 指定环境变量……
 
-作为一个版本控制工具，我们并不聚焦于将命令运行的功能做到完美。需求复杂时，推荐您使用 [Just](https://github.com/casey/just) 命令运行器。只需在配置中编写：
+作为一个版本控制工具，我们并不聚焦于将命令运行的功能做到完美。需求复杂时，推荐您使用 [Just](https://github.com/casey/just) 命令运行器或 [mise](https://mise.jdx.dev)。这里我们以 Just 为例，只需在配置中编写：
 
 ```toml
 [hooks]

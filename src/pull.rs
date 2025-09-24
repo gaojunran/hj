@@ -2,7 +2,6 @@ use duct::cmd;
 
 use crate::{
     config::AppConfig,
-    push::command_push,
     utils::{step, warning},
 };
 

@@ -1,0 +1,6 @@
+{
+  "bun.runtime": "/Volumes/2tb-ssd/nebula/.local/share/mise/shims/bun",
+  "debug.javascript.defaultRuntimeExecutable": {
+    "pwa-node": "/Volumes/2tb-ssd/nebula/.local/share/mise/shims/node"
+  }
+}

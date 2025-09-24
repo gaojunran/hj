@@ -1,5 +1,5 @@
 use config::{Config, ConfigError, Environment, File};
-use dirs::{config_dir, home_dir};
+use dirs::home_dir;
 use std::{env, path::PathBuf};
 
 use serde::{Deserialize, Serialize};

@@ -71,6 +71,7 @@ export default defineConfig({
               { text: '钩子', link: '/cn/hooks' },
               { text: '配置', link: '/cn/config' },
               { text: '常见问题', link: '/cn/faq' },
+              { text: '贡献指南', link: '/cn/contributing' },
             ]
           }
         ],
