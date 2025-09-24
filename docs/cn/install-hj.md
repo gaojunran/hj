@@ -1,9 +1,7 @@
 # 安装
 
-:::tip 请先安装 [jj-vcs](https://github.com/jj-vcs/jj) 🚀
-[jj-vcs](https://github.com/jj-vcs/jj) 是 hj 的核心依赖。参阅 [安装 jj](https://jj-vcs.github.io/jj/latest/install-and-setup/)。
-
-特别地，如果你使用的是 scoop、brew 等包管理器的安装方式，我们在它们的安装脚本中包含了对 jj-vcs 的安装命令，因此你无需手动安装 jj-vcs。
+:::tip 请先安装 [Jujutsu](https://github.com/jj-vcs/jj) 🚀
+[Jujutsu](https://github.com/jj-vcs/jj) 是 hj 的核心依赖。参阅 [安装 jj](https://jj-vcs.github.io/jj/latest/install-and-setup/)。
 :::
 
 ## 使用 [stew](https://github.com/marwanhawari/stew) 安装
@@ -12,6 +10,14 @@
 
 ```bash
 stew install gaojunran/hj
+```
+
+## 使用 [mise](https://mise.jdx.dev) 安装
+
+[mise](https://mise.jdx.dev) 是一个集开发工具安装、开发工具多版本管理、环境变量管理和任务管理为一体的工具 💪🏻，支持安装 GitHub Release Assets 中的二进制文件。
+
+```bash
+mise use github:gaojunran/hj
 ```
 
 ## 使用 `cargo install` 手动编译
