@@ -17,8 +17,7 @@ pub fn current_branch() -> Option<String> {
 }
 
 mod test {
-    
-
+    use crate::starship::current_branch;
     #[test]
     fn test_current_branch() {
         let start_time = std::time::Instant::now();

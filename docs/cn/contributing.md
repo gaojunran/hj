@@ -1,6 +1,6 @@
 # 贡献指南
 
-## ALL in [mise](https://mise.jdx.dev)
+## All in [mise](https://mise.jdx.dev)
 
 本项目的开发环境配置均在项目目录的 `mise.toml` 中定义。
 

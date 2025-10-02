@@ -118,10 +118,6 @@ jobs:
           prerelease: false
           fail_on_unmatched_files: false
           overwrite: true
+          files: artifacts/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload binaries to GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: artifacts/**/*
