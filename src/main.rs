@@ -9,7 +9,6 @@ mod log;
 mod open;
 mod pull;
 mod push;
-mod starship;
 mod switch;
 mod tools;
 mod upbase;

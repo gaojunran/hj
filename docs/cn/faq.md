@@ -115,3 +115,40 @@ hj 用 Rust 语言编写的一个命令行工具。
 切换成本很低，因为它可以与您现有的工作流程无缝集成。坦白说，最多一天就能习惯使用，而且使用好东西确实有道理。当然，你可以在任何食品安全的壶里泡出好茶，但如果你有一个漂亮的茶壶，每次泡茶都会享受。你一定经常使用版本控制系统，为什么不让它也变得愉快呢？
 
 > 这个比喻来自 [kubamartin 的博文](https://kubamartin.com/posts/introduction-to-the-jujutsu-vcs/)。
+
+## 如何实现当切换（`cd`）到 hj 项目目录时，自动拉取最新的代码？
+
+`cd` 的行为需要注册到 Shell 的 Hook 中，具体根据 Shell 不同存在多种实现。
+
+例如 fish 中，可以监听 `PWD` 的变化：
+
+```fish
+function on_dir_change --on-variable PWD
+    if test -d "$PWD/.jj"
+        hj pull
+    end
+end
+```
+
+例如 nushell 中，也可以监听 `PWD` 的变化：
+
+```nushell
+$env.config.hooks = {
+    env_change: {
+        PWD: [
+            {|before, after|
+                if $after | path join ".jj" | path exists {
+                    hj pull
+                }
+            }
+        ]
+    }
+}
+```
+
+以上都是全局配置，如果你要项目级配置，则需要更复杂的代码。而 [mise](https://github.com/jdx/mise) 提供了这个功能！只需在 `mise.toml` 中编写：
+
+```toml
+[hooks]
+enter = "hj pull"
+```

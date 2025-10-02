@@ -2,7 +2,7 @@
 name = "hj-vcs"
 description = "Fast, opinionated version control experience."
 license = "MIT"
-version = "0.1.12"
+version = "0.2.4"
 edition = "2024"
 repository = "https://github.com/gaojunran/hj"
 documentation = "https://hj-vcs.netlify.app"

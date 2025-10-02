@@ -70,6 +70,7 @@ export default defineConfig({
             items: [
               { text: '钩子', link: '/cn/hooks' },
               { text: '配置', link: '/cn/config' },
+              { text: '与 Starship 集成', link: '/cn/starship' },
               { text: '常见问题', link: '/cn/faq' },
               { text: '贡献指南', link: '/cn/contributing' },
             ]
