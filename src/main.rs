@@ -49,6 +49,7 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// Start version control experience!
+    #[command(alias = "in")]
     Init {
         /// Create a GitHub repo if given. You should have `gh` installed and logged in.
         #[arg(short, long, alias = "gh")]
@@ -64,6 +65,7 @@ enum Commands {
     },
 
     /// Clone a repo from remote.
+    #[command(alias = "cl")]
     Clone {
         /// The url, or full name of a repo ("owner/repo") to clone.
         source: String,
