@@ -23,7 +23,7 @@ use duct::cmd;
 
 use crate::{
     clone::command_clone,
-    commit::{command_amend, command_reset},
+    commit::{command_amend, command_reset, command_throw},
     download::command_download,
     init::command_init,
     keepup::command_keepup,
@@ -417,6 +417,10 @@ fn main() {
                 error(&e.to_string());
             }
         }
-        Commands::Throw { from, force } => {}
+        Commands::Throw { from, force } => {
+            if let Err(e) = command_throw(from.clone(), *force) {
+                error(&e.to_string());
+            }
+        }
     }
 }
