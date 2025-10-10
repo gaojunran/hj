@@ -1,7 +1,41 @@
 use duct::cmd;
 use regex::Regex;
+use std::env;
 
-use crate::config::AppConfig;
+use crate::{config::AppConfig, utils::step};
+
+fn fork_repo(owner: &str, repo: &str) -> anyhow::Result<()> {
+    // Get GitHub token from environment variable
+    let token = env::var("GITHUB_TOKEN")
+        .or_else(|_| env::var("GH_TOKEN"))
+        .map_err(|_| anyhow::anyhow!("GITHUB_TOKEN or GH_TOKEN environment variable not set"))?;
+
+    let client = reqwest::blocking::Client::new();
+    let url = format!("https://api.github.com/repos/{}/{}/forks", owner, repo);
+
+    let response = client
+        .post(&url)
+        .header("Authorization", format!("Bearer {}", token))
+        .header("User-Agent", "hj-vcs")
+        .header("Accept", "application/vnd.github+json")
+        .header("X-GitHub-Api-Version", "2022-11-28")
+        .send()?;
+
+    if !response.status().is_success() {
+        let status = response.status();
+        let error_text = response
+            .text()
+            .unwrap_or_else(|_| "Unknown error".to_string());
+        return Err(anyhow::anyhow!(
+            "Failed to fork repository: {} - {}",
+            status,
+            error_text
+        ));
+    }
+
+    step(&format!("Forked {}/{}", owner, repo));
+    Ok(())
+}
 
 pub(crate) fn command_clone(
     config: &AppConfig,
@@ -10,17 +44,31 @@ pub(crate) fn command_clone(
     colocate: bool,
     fork: bool,
 ) -> anyhow::Result<()> {
-    let (mut url, mut user, _) = build_info(
+    let (mut url, user, repo) = build_info(
         &config.clone.default_host,
         config.clone.default_user.as_deref(),
         source,
     )
     .ok_or(anyhow::anyhow!("Invalid URL or fullname"))?;
-    if fork && let Some(forker) = &config.clone.default_user {
-        cmd!("gh", "repo", "fork", &url).run()?;
+
+    let original_url = url.clone();
+    let is_forked = if fork {
+        let forker = config
+            .clone
+            .default_user
+            .as_ref()
+            .ok_or(anyhow::anyhow!("default_user is required for forking"))?;
+
+        // Fork via GitHub API
+        fork_repo(&user, &repo)?;
+
+        // Update URL to point to forked repo
         url = url.replacen(&(user.clone() + "/"), &(forker.clone() + "/"), 1);
-        user = forker.to_string(); // unused now
-    }
+        true
+    } else {
+        false
+    };
+
     let mut args = vec!["git", "clone", &url];
     if let Some(destination) = destination {
         args.push(destination);
@@ -29,6 +77,16 @@ pub(crate) fn command_clone(
         args.push("--colocate");
     }
     cmd("jj", args).run()?;
+
+    // Add upstream remote if we forked
+    if is_forked {
+        let clone_dir = destination.unwrap_or(&repo);
+        cmd!("jj", "git", "remote", "add", "upstream", &original_url)
+            .dir(clone_dir)
+            .run()?;
+        step(&format!("Added upstream remote: {}", original_url));
+    }
+
     Ok(())
 }
 

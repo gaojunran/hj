@@ -1,7 +1,9 @@
 [tools]
 rust = "nightly"
-node = "22"
-pnpm = "latest"
+bun = "latest"
+
+[env]
+'_'.path = ["./target/debug"]
 
 [tasks.install]
 description = "Install hj from local"
@@ -14,8 +16,8 @@ run = "cargo clippy --fix --allow-no-vcs"
 [tasks.docs]
 description = "Run docs"
 run = [
-  "pnpm install",
-  "pnpm run docs:dev",
+  "bun install --no-cache",
+  "bun run docs:dev",
 ]
 dir = "docs"
 
@@ -25,3 +27,9 @@ dir = "docs"
 description = "Stat code lines"
 run = "tokei ."
 dir = "src"
+
+[tasks.ci]
+depends = ["lint"]
+
+[tasks.post_commit]
+depends = ["install"]

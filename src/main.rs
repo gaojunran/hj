@@ -39,7 +39,6 @@ use crate::{
 #[derive(Parser)]
 #[command(name = "hj")]
 #[command(author = "Gao Junran <nebula2021@126.com>")]
-#[command(version = "0.1")]
 #[command(about = "Fast, opinionated version control experience.", long_about = None)]
 struct Cli {
     #[command(subcommand)]
