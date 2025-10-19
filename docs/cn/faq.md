@@ -153,3 +153,33 @@ $env.config.hooks = {
 [hooks]
 enter = "hj pull"
 ```
+
+## 我有工作邮箱和自己的邮箱，一个用于工作、一个用于开源项目，怎么灵活地切换呢？
+
+一个朴素的方法是在每个代码仓库的 `.jj/repo/config.toml` 中指定：
+
+```toml
+[user]
+name = "YOUR NAME"
+email = "YOUR_EMAIL@example.com"
+```
+
+这样这个配置就会覆盖全局配置。
+
+当然，这么做需要你对每个项目都单独配置。以下是我使用 [mise](https://mise.jdx.dev) 的好方法：
+
+指定两个目录，一个为 `Work`，另一个为 `Project`，将工作项目和开源项目分开放置。在 `Work` 的目录下新建 `mise.toml`：
+
+```toml
+[env]
+JJ_USER = "{{env.WORK_USER}}"
+JJ_EMAIL = "{{env.WORK_EMAIL}}"
+```
+
+（当然，你也可以直接写值，不从环境变量中读取）
+
+这样，你每次 `cd` 到 `Work` 及其子目录时，就会自动给你挂上这两个环境变量。你可以使用 `hj config list` 来验证。
+
+在 `Work` 外的其它目录，因为没有这两个环境变量，就会正常使用默认的全局配置。
+
+必须使用这种变通方法的原因是 `jj` 只从本仓库内和全局读取配置，而不从**本目录递归向上**读取配置。作为一个版本控制工具，`jj` 有其特殊的考虑。未来 `hj` 可能考虑在 `hj.toml` 中加上配置项，为每个操作自动加上 `--config` 标志。
