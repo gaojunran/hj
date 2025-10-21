@@ -65,6 +65,14 @@ hj 的理念有所不同，「简单」是我们的第一设计理念。我们�
 
 - hj 的很多改变工作副本指向的操作不会自动推进书签。这是 jj 的特意设计，hj 正在尝试解决。
 
+- jj 和 hj 不支持 Git 的子模块功能。目前你可以做的是在 Git 与 hj 共存的仓库中，手动用 Git 管理子模块间的同步等逻辑，在每个子模块中使用 `hj init` 进行版本控制。
+
+- hj 几乎每个命令都会和 jj 有着两百毫秒的速度差距，这在命令行中是非常明显的：
+
+![alt text](/image7.png)
+
+原因是 hj 每次调用 jj 时都有着 spawn 子进程的开销。未来我们会考虑使用 jj-lib，或使用 jj 提供的对外 API 来优化。
+
 - hj 目前仅在 GitHub 中发布各架构的 Release。除了从 GitHub 手动下载二进制文件外，你仅能通过 `cargo install --path .` 来从源码编译。未来我们将会至少支持以下安装方式： 
   - [scoop](https://scoop.sh/) (Windows)、
   - PowerShell script (Windows)、
@@ -80,6 +88,7 @@ hj 的理念有所不同，「简单」是我们的第一设计理念。我们�
 - ✅　`hj commit` 和 `hj describe` 时支持打开编辑器进行多行描述的编辑。
 - ✅　提供 Hooks 支持。
 - 🚧 全面移除对 gh cli 的依赖，使用 GitHub API。
+- 🚧 重构对 jj 调用的封装。
 - 🤔　发布到 scoop、homebrew；编写 PowerShell script 和 bash script。
 - 🤔　`hj init` 时支持下载 `.gitignore`。（[来源](https://github.com/github/gitignore)）
 - 🤔　全面支持 GitLab。

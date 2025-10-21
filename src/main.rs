@@ -264,17 +264,18 @@ fn main() {
         hint("https://jj-vcs.github.io/jj/latest/install-and-setup/");
         return;
     }
-    if let Err(e) = check_gh_installed()
-        && config.check_gh
-    {
-        warning(&e.to_string());
-        hint(
-            "`gh` CLI brings convenience for GitHub operations. Ignore this if you don't use GitHub.",
-        );
-        hint("https://github.com/cli/cli#installation");
-        hint("Set config key `check_gh` to false to disable this check.");
-        println!();
-    }
+    // lazy check. only check when needed.
+    // if let Err(e) = check_gh_installed()
+    //     && config.check_gh
+    // {
+    //     warning(&e.to_string());
+    //     hint(
+    //         "`gh` CLI brings convenience for GitHub operations. Ignore this if you don't use GitHub.",
+    //     );
+    //     hint("https://github.com/cli/cli#installation");
+    //     hint("Set config key `check_gh` to false to disable this check.");
+    //     println!();
+    // }
     let subcommand = env::args().nth(1).unwrap_or_else(|| {
         if let Err(e) = cmd!("jj").run() {
             error(&e.to_string());
