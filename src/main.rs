@@ -2,6 +2,7 @@ mod clone;
 mod commit;
 mod config;
 mod download;
+mod fetch;
 mod hook;
 mod init;
 mod keepup;
@@ -25,6 +26,7 @@ use crate::{
     clone::command_clone,
     commit::{command_amend, command_reset, command_throw},
     download::command_download,
+    fetch::command_fetch,
     init::command_init,
     keepup::command_keepup,
     log::{command_log_all, command_log_wip},
@@ -33,7 +35,7 @@ use crate::{
     push::command_push,
     switch::command_switch,
     upbase::command_upbase,
-    utils::{error, hint, warning},
+    utils::{error, hint},
 };
 
 #[derive(Parser)]
@@ -147,6 +149,13 @@ enum Commands {
     Pull {
         // Specify where our new work will be based on. Skip rebasing if not given.
         branch: Option<String>,
+    },
+
+    /// Fetch changes from remote (and track bookmarks). Can be shortened as `f`.
+    #[command(alias = "f")]
+    Fetch {
+        /// The branches to fetch (will be tracked and passed to `jj git fetch --bookmark`).
+        branch: Vec<String>,
     },
 
     /// Amend from working copy to a commit (by default the latest one).
@@ -368,6 +377,11 @@ fn main() {
         }
         Commands::Pull { branch } => {
             if let Err(e) = command_pull(&config, branch.clone()) {
+                error(&e.to_string());
+            }
+        }
+        Commands::Fetch { branch } => {
+            if let Err(e) = command_fetch(&config, branch.clone()) {
                 error(&e.to_string());
             }
         }

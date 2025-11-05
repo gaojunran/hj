@@ -61,6 +61,21 @@ hj push
 
 :::
 
+### 从远程获取书签
+
+为了更方便地控制从远程获取书签（bookmark），增加了 `hj fetch` 命令：
+
+- 拉取远程变更：
+  ```sh
+  hj fetch
+  ```
+  
+- 跟踪分支，并仅获取指定分支的远程变更：
+  ```sh
+  hj fetch main feature-A
+  ```
+
+
 ## 拉取
 
 ::: details 对于熟悉 git 的用户

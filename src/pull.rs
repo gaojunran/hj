@@ -3,6 +3,7 @@ use std::env;
 
 use crate::{
     config::AppConfig,
+    fetch::command_fetch,
     utils::{step, warning},
 };
 
@@ -115,8 +116,17 @@ pub(crate) fn command_pull(_config: &AppConfig, branch: Option<String>) -> anyho
         }
     }
 
+    // Build branch list for fetch: pass the single branch if provided, otherwise empty.
+    let branches: Vec<String> = if let Some(b) = branch.clone() {
+        vec![b.clone()]
+    } else {
+        vec![]
+    };
+
     step("Fetching changes from the remote...");
-    cmd!("jj", "git", "fetch").run()?;
+    // Use centralized fetch command which will track bookmarks when branches are provided.
+    command_fetch(_config, branches)?;
+
     if let Some(branch) = branch {
         step(format!("Rebasing on `{branch}`...").as_str());
         cmd!("jj", "rebase", "-d", &branch).run()?;

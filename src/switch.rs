@@ -11,7 +11,7 @@ pub(crate) fn command_switch(
 ) -> anyhow::Result<()> {
     command_keepup(config, keepup_branch)?;
     let aheads_rev = format!("({dest_branch}+) ~ bookmarks() & description(exact:\"\")");
-    let aheads = log(&aheads_rev, "change_id ++ '\n'")?
+    let aheads = log(&aheads_rev, "change_id ++ '\n'", true)?
         .trim()
         .lines()
         .count();
