@@ -15,8 +15,6 @@ mod tools;
 mod upbase;
 mod utils;
 
-use std::env;
-
 use anyhow::{Result, anyhow};
 use clap::{Parser, Subcommand};
 use commit::command_commit;
@@ -43,11 +41,17 @@ struct FallbackCommand {
     aliases: Vec<&'static str>,
     before_execute: Option<fn() -> Result<()>>,
     after_execute: Option<fn() -> Result<()>>,
+    rewrite_args: Option<fn(Vec<String>) -> Result<Vec<String>>>,
 }
 
 impl FallbackCommand {
-    fn matches(&self, command: &str) -> bool {
-        self.name == command || self.aliases.iter().any(|alias| *alias == command)
+    /// Returns the canonical command name if the input matches this command or its aliases
+    fn matches(&self, command: &str) -> Option<&'static str> {
+        if self.name == command || self.aliases.iter().any(|alias| *alias == command) {
+            Some(self.name)
+        } else {
+            None
+        }
     }
 }
 
@@ -55,249 +59,290 @@ fn get_fallback_commands() -> Vec<FallbackCommand> {
     vec![
         FallbackCommand {
             name: "abandon",
-            aliases: vec![],
+            aliases: vec!["ab"],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "absorb",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "backout",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "bookmark",
             aliases: vec!["b"],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "config",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "debug",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "describe",
-            aliases: vec!["desc"],
+            aliases: vec!["desc", "de"],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "diff",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "diffedit",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "duplicate",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "edit",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "evolog",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "file",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "fix",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "git",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "interdiff",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "log",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "new",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "next",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "operation",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "parallelize",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "prev",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "rebase",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "resolve",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "restore",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "revert",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "root",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "run",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "show",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "sign",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "simplify-parents",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "sparse",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "split",
-            aliases: vec![],
+            aliases: vec!["sp"],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "squash",
-            aliases: vec![],
+            aliases: vec!["sq"],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "status",
             aliases: vec!["st"],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "tag",
-            aliases: vec![],
+            aliases: vec!["t"],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "undo",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "unsign",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "util",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "version",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
         FallbackCommand {
             name: "workspace",
             aliases: vec![],
             before_execute: None,
             after_execute: None,
+            rewrite_args: None,
         },
     ]
 }
@@ -429,6 +474,12 @@ enum Commands {
         /// force amend (allow mutate the immutable commit)
         #[arg(short, long)]
         force: bool,
+
+        #[arg(long)]
+        no_pre_hook: bool,
+
+        #[arg(long)]
+        no_post_hook: bool,
     },
 
     /// Reset from a commit (by default the latest one) to working copy.
@@ -491,6 +542,10 @@ enum Commands {
         /// open remote url
         remote: Option<String>,
     },
+
+    /// External subcommands (fallback to jj)
+    #[command(external_subcommand)]
+    External(Vec<String>),
 }
 
 fn check_jj_installed() -> anyhow::Result<()> {
@@ -524,6 +579,42 @@ fn check_dot_git() -> bool {
     std::path::Path::new(".git").exists()
 }
 
+fn handle_fallback_command(args: &[String]) -> anyhow::Result<()> {
+    let fallback_commands = get_fallback_commands();
+    let subcommand = &args[0];
+
+    // Find matching command and get canonical name
+    for fallback_cmd in &fallback_commands {
+        if let Some(canonical_name) = fallback_cmd.matches(subcommand) {
+            // Execute before_execute hook
+            if let Some(before_hook) = fallback_cmd.before_execute {
+                before_hook()?;
+            }
+
+            // Replace the subcommand with canonical name and keep other args
+            let mut final_args = vec![canonical_name.to_string()];
+            final_args.extend_from_slice(&args[1..]);
+
+            // Rewrite args if needed
+            if let Some(rewrite_fn) = fallback_cmd.rewrite_args {
+                final_args = rewrite_fn(final_args)?;
+            }
+
+            // Execute the jj command
+            cmd("jj", &final_args).run()?;
+
+            // Execute after_execute hook
+            if let Some(after_hook) = fallback_cmd.after_execute {
+                after_hook()?;
+            }
+
+            return Ok(());
+        }
+    }
+
+    Err(anyhow!("Unknown command: {}", subcommand))
+}
+
 fn main() {
     let config = config::AppConfig::from_env().unwrap_or_else(|err| {
             let location = dirs::config_dir().unwrap()
@@ -537,59 +628,7 @@ fn main() {
         hint("https://jj-vcs.github.io/jj/latest/install-and-setup/");
         return;
     }
-    // lazy check. only check when needed.
-    // if let Err(e) = check_gh_installed()
-    //     && config.check_gh
-    // {
-    //     warning(&e.to_string());
-    //     hint(
-    //         "`gh` CLI brings convenience for GitHub operations. Ignore this if you don't use GitHub.",
-    //     );
-    //     hint("https://github.com/cli/cli#installation");
-    //     hint("Set config key `check_gh` to false to disable this check.");
-    //     println!();
-    // }
-    let subcommand = env::args().nth(1).unwrap_or_else(|| {
-        if let Err(e) = cmd!("jj").run() {
-            error(&e.to_string());
-        }
-        std::process::exit(0);
-    });
-    let fallback_commands = get_fallback_commands();
-    if let Some(fallback_cmd) = fallback_commands
-        .iter()
-        .find(|cmd| cmd.matches(&subcommand))
-    {
-        // Execute before_execute hook
-        if let Some(before_hook) = fallback_cmd.before_execute {
-            if let Err(e) = before_hook() {
-                error(&format!("before_execute hook failed: {}", e));
-                std::process::exit(1);
-            }
-        }
 
-        // Execute the jj command
-        if let Err(e) = cmd("jj", env::args().skip(1)).run() {
-            error(&e.to_string());
-            std::process::exit(1);
-        };
-
-        // Execute after_execute hook
-        if let Some(after_hook) = fallback_cmd.after_execute {
-            if let Err(e) = after_hook() {
-                error(&format!("after_execute hook failed: {}", e));
-                std::process::exit(1);
-            }
-        }
-
-        std::process::exit(0);
-    }
-    // if config.shortcut_branches.contains(&subcommand) {
-    //     if let Err(e) = command_switch(&config, subcommand, true, check_dot_git()) {
-    //         error(&e.to_string());
-    //     }
-    //     std::process::exit(0);
-    // }
     let cli = Cli::parse();
     match &cli.command {
         Commands::Init {
@@ -630,8 +669,15 @@ fn main() {
                 error(&e.to_string());
             }
         }
-        Commands::Amend { into, force } => {
-            if let Err(e) = command_amend(into.clone(), *force) {
+        Commands::Amend {
+            into,
+            force,
+            no_pre_hook,
+            no_post_hook,
+        } => {
+            if let Err(e) =
+                command_amend(&config, into.clone(), *force, *no_pre_hook, *no_post_hook)
+            {
                 error(&e.to_string());
             }
         }
@@ -720,6 +766,11 @@ fn main() {
         }
         Commands::Throw { from, force } => {
             if let Err(e) = command_throw(from.clone(), *force) {
+                error(&e.to_string());
+            }
+        }
+        Commands::External(args) => {
+            if let Err(e) = handle_fallback_command(args) {
                 error(&e.to_string());
             }
         }

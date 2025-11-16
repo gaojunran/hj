@@ -46,7 +46,18 @@ pub(crate) fn command_commit(
     Ok(())
 }
 
-pub(crate) fn command_amend(into: Option<String>, force: bool) -> anyhow::Result<()> {
+pub(crate) fn command_amend(
+    config: &AppConfig,
+    into: Option<String>,
+    force: bool,
+    no_pre_hook: bool,
+    no_post_hook: bool,
+) -> anyhow::Result<()> {
+    if let Some(pre_commit) = &config.hooks.pre_commit
+        && !no_pre_hook
+    {
+        run_hook(config, pre_commit.clone(), "pre-commit")?;
+    }
     let args: Vec<&str> = vec![
         "squash",
         "--interactive",
@@ -60,6 +71,12 @@ pub(crate) fn command_amend(into: Option<String>, force: bool) -> anyhow::Result
     .filter(|s| !s.is_empty())
     .collect();
     cmd("jj", &args).run()?;
+
+    if let Some(post_commit) = &config.hooks.post_commit
+        && !no_post_hook
+    {
+        run_hook(config, post_commit.clone(), "post-commit")?;
+    }
     Ok(())
 }
 
