@@ -2,8 +2,6 @@
 rust = "nightly"
 bun = "latest"
 
-[env]
-'_'.path = ["./target/debug"]
 
 [tasks.install]
 description = "Install hj from local"

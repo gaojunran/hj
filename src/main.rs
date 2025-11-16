@@ -17,7 +17,7 @@ mod utils;
 
 use std::env;
 
-use anyhow::anyhow;
+use anyhow::{Result, anyhow};
 use clap::{Parser, Subcommand};
 use commit::command_commit;
 use duct::cmd;
@@ -37,6 +37,270 @@ use crate::{
     upbase::command_upbase,
     utils::{error, hint},
 };
+
+struct FallbackCommand {
+    name: &'static str,
+    aliases: Vec<&'static str>,
+    before_execute: Option<fn() -> Result<()>>,
+    after_execute: Option<fn() -> Result<()>>,
+}
+
+impl FallbackCommand {
+    fn matches(&self, command: &str) -> bool {
+        self.name == command || self.aliases.iter().any(|alias| *alias == command)
+    }
+}
+
+fn get_fallback_commands() -> Vec<FallbackCommand> {
+    vec![
+        FallbackCommand {
+            name: "abandon",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "absorb",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "backout",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "bookmark",
+            aliases: vec!["b"],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "config",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "debug",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "describe",
+            aliases: vec!["desc"],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "diff",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "diffedit",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "duplicate",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "edit",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "evolog",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "file",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "fix",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "git",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "interdiff",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "log",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "new",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "next",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "operation",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "parallelize",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "prev",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "rebase",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "resolve",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "restore",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "revert",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "root",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "run",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "show",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "sign",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "simplify-parents",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "sparse",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "split",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "squash",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "status",
+            aliases: vec!["st"],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "tag",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "undo",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "unsign",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "util",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "version",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+        FallbackCommand {
+            name: "workspace",
+            aliases: vec![],
+            before_execute: None,
+            after_execute: None,
+        },
+    ]
+}
 
 #[derive(Parser)]
 #[command(name = "hj")]
@@ -291,10 +555,33 @@ fn main() {
         }
         std::process::exit(0);
     });
-    if config.fallback_commands.contains(&subcommand) {
+    let fallback_commands = get_fallback_commands();
+    if let Some(fallback_cmd) = fallback_commands
+        .iter()
+        .find(|cmd| cmd.matches(&subcommand))
+    {
+        // Execute before_execute hook
+        if let Some(before_hook) = fallback_cmd.before_execute {
+            if let Err(e) = before_hook() {
+                error(&format!("before_execute hook failed: {}", e));
+                std::process::exit(1);
+            }
+        }
+
+        // Execute the jj command
         if let Err(e) = cmd("jj", env::args().skip(1)).run() {
             error(&e.to_string());
+            std::process::exit(1);
         };
+
+        // Execute after_execute hook
+        if let Some(after_hook) = fallback_cmd.after_execute {
+            if let Err(e) = after_hook() {
+                error(&format!("after_execute hook failed: {}", e));
+                std::process::exit(1);
+            }
+        }
+
         std::process::exit(0);
     }
     // if config.shortcut_branches.contains(&subcommand) {

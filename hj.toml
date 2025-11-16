@@ -1,2 +1,0 @@
-[hooks]
-post_commit = "mise run post-commit"  # use mise to install hj to PATH automatically

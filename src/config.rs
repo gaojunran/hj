@@ -8,7 +8,6 @@ use serde::{Deserialize, Serialize};
 pub struct AppConfig {
     pub check_gh: bool,
     // pub hosts: Vec<String>,
-    pub fallback_commands: Vec<String>,
     pub shortcut_branches: Vec<String>,
     pub always_colocate: bool,
     pub hooks: HookConfig,
@@ -77,55 +76,6 @@ impl Default for AppConfig {
     fn default() -> Self {
         AppConfig {
             check_gh: true,
-            fallback_commands: [
-                "abandon",
-                "absorb",
-                "backout",
-                "b", // bookmark
-                "bookmark",
-                "config",
-                "debug",
-                "describe",
-                "desc", // describe
-                "diff",
-                "diffedit",
-                "duplicate",
-                "edit",
-                "evolog",
-                "file",
-                "fix",
-                "git",
-                "interdiff",
-                "log",
-                "new",
-                "next",
-                "operation",
-                "parallelize",
-                "prev",
-                "rebase",
-                "resolve",
-                "restore",
-                "revert",
-                "root",
-                "run",
-                "show",
-                "sign",
-                "simplify-parents",
-                "sparse",
-                "split",
-                "squash",
-                "status",
-                "st", // status
-                "tag",
-                "undo",
-                "unsign",
-                "util",
-                "version",
-                "workspace",
-            ]
-            .iter()
-            .map(|item| item.to_string())
-            .collect(),
             shortcut_branches: ["main", "master", "trunk", "dev"]
                 .iter()
                 .map(|item| item.to_string())
