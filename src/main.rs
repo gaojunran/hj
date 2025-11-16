@@ -471,6 +471,11 @@ enum Commands {
     #[command(alias = "am")]
     Amend {
         into: Option<String>,
+
+        /// Run `hj push` after amending.
+        #[arg(short, long)]
+        push: bool,
+
         /// force amend (allow mutate the immutable commit)
         #[arg(short, long)]
         force: bool,
@@ -486,6 +491,11 @@ enum Commands {
     #[command(alias = "rs")]
     Reset {
         from: Option<String>,
+
+        /// Run `hj push` after resetting.
+        #[arg(short, long)]
+        push: bool,
+
         /// force reset (allow mutate the immutable commit)
         #[arg(short, long)]
         force: bool,
@@ -671,18 +681,24 @@ fn main() {
         }
         Commands::Amend {
             into,
+            push,
             force,
             no_pre_hook,
             no_post_hook,
         } => {
-            if let Err(e) =
-                command_amend(&config, into.clone(), *force, *no_pre_hook, *no_post_hook)
-            {
+            if let Err(e) = command_amend(
+                &config,
+                into.clone(),
+                *push,
+                *force,
+                *no_pre_hook,
+                *no_post_hook,
+            ) {
                 error(&e.to_string());
             }
         }
-        Commands::Reset { from, force } => {
-            if let Err(e) = command_reset(from.clone(), *force) {
+        Commands::Reset { from, push, force } => {
+            if let Err(e) = command_reset(&config, from.clone(), *push, *force) {
                 error(&e.to_string());
             }
         }

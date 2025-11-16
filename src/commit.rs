@@ -49,6 +49,7 @@ pub(crate) fn command_commit(
 pub(crate) fn command_amend(
     config: &AppConfig,
     into: Option<String>,
+    push: bool,
     force: bool,
     no_pre_hook: bool,
     no_post_hook: bool,
@@ -77,10 +78,29 @@ pub(crate) fn command_amend(
     {
         run_hook(config, post_commit.clone(), "post-commit")?;
     }
+    // TODO: should we give more options here?
+    if push {
+        // step("Pushing changes...");
+        command_push(
+            config,
+            &Vec::new(), // auto select what to push
+            &Vec::new(), // no changes should be given
+            config.push.still,
+            config.push.pull,
+            config.push.upbase,
+            false,
+            false,
+        )?;
+    }
     Ok(())
 }
 
-pub(crate) fn command_reset(from: Option<String>, force: bool) -> anyhow::Result<()> {
+pub(crate) fn command_reset(
+    config: &AppConfig,
+    from: Option<String>,
+    push: bool,
+    force: bool,
+) -> anyhow::Result<()> {
     let args: Vec<&str> = vec![
         "squash",
         "--interactive",
@@ -95,6 +115,20 @@ pub(crate) fn command_reset(from: Option<String>, force: bool) -> anyhow::Result
     .collect();
 
     cmd("jj", &args).run()?;
+    // TODO: should we give more options here?
+    if push {
+        // step("Pushing changes...");
+        command_push(
+            config,
+            &Vec::new(), // auto select what to push
+            &Vec::new(), // no changes should be given
+            config.push.still,
+            config.push.pull,
+            config.push.upbase,
+            false,
+            false,
+        )?;
+    }
     Ok(())
 }
 
