@@ -1,89 +1,86 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "hj",
   description: "Fast, opinionated version control experience.",
   markdown: {
-    theme: "vitesse-dark"
+    theme: "vitesse-dark",
   },
   locales: {
     root: {
-      label: 'English',
-      lang: 'en',
+      label: "English",
+      lang: "en",
       themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
-        nav: [
-          { text: 'Home', link: '/' },
-        ],
+        nav: [{ text: "Home", link: "/" }],
 
         sidebar: [
           {
-            text: 'Quick Tutorial',
+            text: "Quick Tutorial",
             items: [
-              { text: 'Initialize a repo', link: '/init' },
-              { text: 'Clone / Download a repo', link: '/clone' },
-              { text: 'Repo Status', link: '/status' },
-              { text: 'Commit', link: '/commit' },
-              { text: 'Branch', link: '/branch' },
-              { text: 'Pull / Push', link: '/pull-push' },
-            ]
+              { text: "Initialize a repo", link: "/init" },
+              { text: "Clone / Download a repo", link: "/clone" },
+              { text: "Repo Status", link: "/status" },
+              { text: "Commit", link: "/commit" },
+              { text: "Branch", link: "/branch" },
+              { text: "Pull / Push", link: "/pull-push" },
+            ],
           },
           {
-            text: 'Advanced',
+            text: "Advanced",
             items: [
-              { text: 'Config', link: '/config' },
-              { text: 'FAQ', link: '/faq' },
-            ]
-          }
+              { text: "Config", link: "/config" },
+              { text: "Cookbook", link: "/cookbook" },
+              { text: "FAQ", link: "/faq" },
+            ],
+          },
         ],
 
         socialLinks: [
-          { icon: 'github', link: 'https://github.com/gaojunran/hj' }
-        ]
-      }
+          { icon: "github", link: "https://github.com/gaojunran/hj" },
+        ],
+      },
     },
     cn: {
-      label: '中文',
-      lang: 'zh-CN',
+      label: "中文",
+      lang: "zh-CN",
       themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
-        nav: [
-          { text: '主页', link: '/cn' },
-        ],
+        nav: [{ text: "主页", link: "/cn" }],
 
         sidebar: [
           {
-            text: '快速上手',
+            text: "快速上手",
             items: [
-              { text: '安装 hj', link: '/cn/install-hj' },
-              { text: '初始化仓库', link: '/cn/init' },
-              { text: '克隆和下载仓库', link: '/cn/clone' },
-              { text: '查看状态', link: '/cn/status' },
-              { text: '提交', link: '/cn/commit' },
-              { text: '分支/书签', link: '/cn/branch' },
-              { text: '拉取和推送', link: '/cn/pull-push' },
-            ]
+              { text: "安装 hj", link: "/cn/install-hj" },
+              { text: "初始化仓库", link: "/cn/init" },
+              { text: "克隆和下载仓库", link: "/cn/clone" },
+              { text: "查看状态", link: "/cn/status" },
+              { text: "提交", link: "/cn/commit" },
+              { text: "分支/书签", link: "/cn/branch" },
+              { text: "拉取和推送", link: "/cn/pull-push" },
+            ],
           },
           {
-            text: '进阶',
+            text: "进阶",
             items: [
-              { text: '钩子', link: '/cn/hooks' },
-              { text: '配置', link: '/cn/config' },
-              { text: '与 Starship 集成', link: '/cn/starship' },
-              { text: '常见问题', link: '/cn/faq' },
-              { text: '贡献指南', link: '/cn/contributing' },
-            ]
-          }
+              { text: "钩子", link: "/cn/hooks" },
+              { text: "配置", link: "/cn/config" },
+              { text: "与 Starship 集成", link: "/cn/starship" },
+              { text: "常见问题", link: "/cn/faq" },
+              { text: "实用脚本", link: "/cn/cookbook" },
+              { text: "贡献指南", link: "/cn/contributing" },
+            ],
+          },
         ],
 
         socialLinks: [
-          { icon: 'github', link: 'https://github.com/gaojunran/hj' }
+          { icon: "github", link: "https://github.com/gaojunran/hj" },
         ],
 
-        outline: [2, 3]
-      }
-    }
+        outline: [2, 3],
+      },
+    },
   },
-  
-})
+});
