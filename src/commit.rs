@@ -102,7 +102,7 @@ pub(crate) fn command_reset(
     force: bool,
 ) -> anyhow::Result<()> {
     let args: Vec<&str> = vec![
-        "squashaaaaa",
+        "squash",
         "--interactive",
         "--from",
         from.as_deref().unwrap_or("@-"),

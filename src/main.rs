@@ -44,7 +44,7 @@ use crate::{
 #[command(about = "Fast, opinionated version control experience.", long_about = None)]
 struct Cli {
     #[command(subcommand)]
-    command: Commands,
+    command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
@@ -295,7 +295,16 @@ fn main() {
     }
 
     let cli = Cli::parse();
-    match &cli.command {
+
+    // If no subcommand is provided, fallback to jj
+    let Some(command) = &cli.command else {
+        if let Err(e) = handle_fallback_command(&[]) {
+            error(&e.to_string());
+        }
+        return;
+    };
+
+    match command {
         Commands::Init {
             github,
             private,
