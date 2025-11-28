@@ -298,10 +298,11 @@ fn main() {
 
     let cli = Cli::parse();
 
-    // If no subcommand is provided, fallback to jj
+    // If no subcommand is provided, fallback to jj without arguments
     let Some(command) = &cli.command else {
-        if let Err(e) = handle_fallback_command(&[]) {
-            error(&e.to_string());
+        use duct::cmd;
+        if let Err(e) = cmd("jj", &[] as &[&str]).run() {
+            error(&format!("Failed to execute jj: {}", e));
         }
         return;
     };
