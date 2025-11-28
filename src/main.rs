@@ -159,7 +159,8 @@ enum Commands {
     },
 
     /// Amend from working copy to a commit (by default the latest one).
-    #[command(alias = "am")]
+    /// If using with EDIT workflow, means move some changes OUT of the editing commit.
+    #[command(aliases = &["am", "out"])]
     Amend {
         into: Option<String>,
 
@@ -179,7 +180,8 @@ enum Commands {
     },
 
     /// Reset from a commit (by default the latest one) to working copy.
-    #[command(alias = "rs")]
+    /// If using with EDIT workflow, means move some changes INTO the editing commit.
+    #[command(aliases = &["rs", "in"])]
     Reset {
         from: Option<String>,
 
