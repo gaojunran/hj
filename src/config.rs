@@ -120,20 +120,24 @@ impl AppConfig {
             None => home_dir().unwrap().join(".config/hj/config.toml"),
         };
         // println!("global config path: {:?}", global_config_path);
-        let mut local_config_path = PathBuf::new();
-        if let Ok(mut base) = env::current_dir() {
-            base.push("hj.toml");
-            local_config_path = base;
-        }
+
+        // Recursively search for hj.toml upwards from current directory
+        let local_config_path = Self::find_local_config();
 
         let default = AppConfig::default();
 
         // load config
-        let builder = Config::builder()
+        let mut builder = Config::builder()
             // load file (if exists)
             .add_source(Config::try_from(&default)?)
-            .add_source(File::from(global_config_path).required(false))
-            .add_source(File::from(local_config_path).required(false))
+            .add_source(File::from(global_config_path).required(false));
+
+        // Add local config if found
+        if let Some(path) = local_config_path {
+            builder = builder.add_source(File::from(path).required(false));
+        }
+
+        let builder = builder
             // load environment variables with prefix HJ_
             .add_source(
                 Environment::with_prefix("HJ")
@@ -143,5 +147,25 @@ impl AppConfig {
 
         let config = builder.build()?;
         config.try_deserialize()
+    }
+
+    /// Recursively search for hj.toml upwards from the current directory
+    fn find_local_config() -> Option<PathBuf> {
+        let mut current_dir = env::current_dir().ok()?;
+
+        loop {
+            let config_path = current_dir.join("hj.toml");
+            if config_path.exists() {
+                return Some(config_path);
+            }
+
+            // Move to parent directory
+            if !current_dir.pop() {
+                // Reached the root directory
+                break;
+            }
+        }
+
+        None
     }
 }
