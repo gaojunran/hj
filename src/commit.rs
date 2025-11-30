@@ -13,7 +13,7 @@ pub(crate) fn command_commit(
     if let Some(pre_commit) = &config.hooks.pre_commit
         && !no_pre_hook
     {
-        run_hook(config, pre_commit.clone(), "pre-commit")?;
+        run_hook(config, pre_commit.clone(), "pre-commit", None)?;
     }
     if let Some(msg) = message {
         cmd!("jj", "commit", "--interactive", "--message", msg).run()?;
@@ -23,7 +23,7 @@ pub(crate) fn command_commit(
     if let Some(post_commit) = &config.hooks.post_commit
         && !no_post_hook
     {
-        run_hook(config, post_commit.clone(), "post-commit")?;
+        run_hook(config, post_commit.clone(), "post-commit", None)?;
     }
     // TODO: should we give more options here?
     if push {
@@ -57,7 +57,7 @@ pub(crate) fn command_amend(
     if let Some(pre_commit) = &config.hooks.pre_commit
         && !no_pre_hook
     {
-        run_hook(config, pre_commit.clone(), "pre-commit")?;
+        run_hook(config, pre_commit.clone(), "pre-commit", None)?;
     }
     let args: Vec<&str> = vec![
         "squash",
@@ -76,7 +76,7 @@ pub(crate) fn command_amend(
     if let Some(post_commit) = &config.hooks.post_commit
         && !no_post_hook
     {
-        run_hook(config, post_commit.clone(), "post-commit")?;
+        run_hook(config, post_commit.clone(), "post-commit", None)?;
     }
     // TODO: should we give more options here?
     if push {

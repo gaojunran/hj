@@ -32,7 +32,12 @@ pub(crate) fn command_push(
     if let Some(pre_push) = &config.hooks.pre_push
         && !no_pre_hook
     {
-        run_hook(config, pre_push.clone(), "pre-push")?;
+        let stdin_input = if !branch.is_empty() {
+            Some(branch.join(" "))
+        } else {
+            None
+        };
+        run_hook(config, pre_push.clone(), "pre-push", stdin_input)?;
     }
 
     let mut args = vec!["git", "push", "--allow-new"];
@@ -55,7 +60,12 @@ pub(crate) fn command_push(
     if let Some(post_push) = &config.hooks.post_push
         && !no_post_hook
     {
-        run_hook(config, post_push.clone(), "post-push")?;
+        let stdin_input = if !branch.is_empty() {
+            Some(branch.join(" "))
+        } else {
+            None
+        };
+        run_hook(config, post_push.clone(), "post-push", stdin_input)?;
     }
 
     Ok(())

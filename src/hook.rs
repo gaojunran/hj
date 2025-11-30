@@ -12,6 +12,7 @@ pub(crate) fn run_hook(
     config: &AppConfig,
     script: String,
     hook_name: &str,
+    stdin_input: Option<String>,
 ) -> anyhow::Result<bool> {
     if config.hooks.use_just && !check_just_installed() {
         step("Install just to run hooks");
@@ -42,7 +43,14 @@ pub(crate) fn run_hook(
         .split_once(' ')
         .map(|(p, a)| (p, a.trim().split(' ').collect()))
         .unwrap_or((&script, Vec::new()));
-    if let Err(e) = cmd(program, &args).run()
+
+    let result = if let Some(input) = stdin_input {
+        cmd(program, &args).stdin_bytes(input.as_bytes()).run()
+    } else {
+        cmd(program, &args).run()
+    };
+
+    if let Err(e) = result
         && hook_name.starts_with("pre-")
     {
         anyhow::bail!("HJ {} hook failed: {}. Aborting.", hook_name, e.to_string());
