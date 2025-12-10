@@ -2,12 +2,14 @@ mod clone;
 mod commit;
 mod config;
 mod download;
+mod edit;
 mod fallback;
 mod fetch;
 mod hook;
 mod init;
 mod keepup;
 mod log;
+mod new;
 mod open;
 mod pull;
 mod push;
@@ -25,11 +27,13 @@ use crate::{
     clone::command_clone,
     commit::{command_amend, command_reset, command_throw},
     download::command_download,
+    edit::command_edit,
     fallback::handle_fallback_command,
     fetch::command_fetch,
     init::command_init,
     keepup::command_keepup,
-    log::{command_log_all, command_log_wip},
+    log::{command_log_all, command_log_mine, command_log_wip},
+    new::command_new,
     open::command_open,
     pull::command_pull,
     push::command_push,
@@ -181,7 +185,7 @@ enum Commands {
 
     /// Reset from a commit (by default the latest one) to working copy.
     /// If using with EDIT workflow, means move some changes INTO the editing commit.
-    #[command(aliases = &["rs", "in"])]
+    #[command(aliases = &["rs", "into"])]
     Reset {
         from: Option<String>,
 
@@ -237,6 +241,35 @@ enum Commands {
     LogWip {
         #[arg(short, long)]
         patch: bool,
+    },
+
+    /// Log my commits.
+    #[command(aliases = ["mine", "mn"])]
+    LogMine {
+        #[arg(short, long)]
+        patch: bool,
+        #[arg(short, long)]
+        summary: bool,
+    },
+
+    /// Create a new commit on top of a revision.
+    New {
+        /// Pick a commit from your commits interactively.
+        #[arg(short, long)]
+        mine: bool,
+        /// All other arguments to pass to jj new.
+        #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
+        rest: Vec<String>,
+    },
+
+    /// Edit a revision.
+    Edit {
+        /// Pick a commit from your commits interactively.
+        #[arg(short, long)]
+        mine: bool,
+        /// All other arguments to pass to jj edit.
+        #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
+        rest: Vec<String>,
     },
 
     /// Open root with your default editor.
@@ -439,6 +472,21 @@ fn main() {
         }
         Commands::LogWip { patch } => {
             if let Err(e) = command_log_wip(&config, *patch) {
+                error(&e.to_string());
+            }
+        }
+        Commands::LogMine { patch, summary } => {
+            if let Err(e) = command_log_mine(&config, *patch, *summary) {
+                error(&e.to_string());
+            }
+        }
+        Commands::New { mine, rest } => {
+            if let Err(e) = command_new(&config, rest.clone(), *mine) {
+                error(&e.to_string());
+            }
+        }
+        Commands::Edit { mine, rest } => {
+            if let Err(e) = command_edit(&config, rest.clone(), *mine) {
                 error(&e.to_string());
             }
         }
