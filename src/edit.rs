@@ -8,9 +8,17 @@ pub(crate) fn command_edit(
     mine: bool,
 ) -> anyhow::Result<()> {
     if mine {
-        // If --mine flag is set, pick from log_mine
-        let rev = crate::log::pick_from_log_mine()?;
-        cmd!("jj", "edit", &rev).run()?;
+        #[cfg(not(unix))]
+        {
+            return Err(anyhow::anyhow!("--mine flag is not supported on Windows"));
+        }
+
+        #[cfg(unix)]
+        {
+            // If --mine flag is set, pick from log_mine
+            let rev = crate::log::pick_from_log_mine()?;
+            cmd!("jj", "edit", &rev).run()?;
+        }
     } else if rest.is_empty() {
         // No arguments provided, use default @
         cmd!("jj", "edit", "@").run()?;
