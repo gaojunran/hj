@@ -1,5 +1,8 @@
 use duct::cmd;
+
+#[cfg(unix)]
 use skim::prelude::*;
+#[cfg(unix)]
 use std::io::Cursor;
 
 use crate::config::AppConfig;
@@ -47,6 +50,7 @@ pub(crate) fn command_log_mine(
     Ok(())
 }
 
+#[cfg(unix)]
 pub(crate) fn pick_from_log_mine() -> anyhow::Result<String> {
     // Get the output from command_log_mine
     let revset = "mine() & ~description(exact:'') & bookmarks()";
@@ -117,4 +121,11 @@ pub(crate) fn pick_from_log_mine() -> anyhow::Result<String> {
         .trim();
 
     Ok(commit_id.to_string())
+}
+
+#[cfg(not(unix))]
+pub(crate) fn pick_from_log_mine() -> anyhow::Result<String> {
+    Err(anyhow::anyhow!(
+        "Interactive selection is not supported on Windows"
+    ))
 }
