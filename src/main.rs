@@ -172,10 +172,6 @@ enum Commands {
         #[arg(short, long)]
         push: bool,
 
-        /// force amend (allow mutate the immutable commit)
-        #[arg(short, long)]
-        force: bool,
-
         #[arg(long)]
         no_pre_hook: bool,
 
@@ -192,10 +188,6 @@ enum Commands {
         /// Run `hj push` after resetting.
         #[arg(short, long)]
         push: bool,
-
-        /// force reset (allow mutate the immutable commit)
-        #[arg(short, long)]
-        force: bool,
     },
 
     /// Pick changes from a commit (by default working copy) and throw them away.
@@ -382,23 +374,16 @@ fn main() {
         Commands::Amend {
             into,
             push,
-            force,
             no_pre_hook,
             no_post_hook,
         } => {
-            if let Err(e) = command_amend(
-                &config,
-                into.clone(),
-                *push,
-                *force,
-                *no_pre_hook,
-                *no_post_hook,
-            ) {
+            if let Err(e) = command_amend(&config, into.clone(), *push, *no_pre_hook, *no_post_hook)
+            {
                 error(&e.to_string());
             }
         }
-        Commands::Reset { from, push, force } => {
-            if let Err(e) = command_reset(&config, from.clone(), *push, *force) {
+        Commands::Reset { from, push } => {
+            if let Err(e) = command_reset(&config, from.clone(), *push) {
                 error(&e.to_string());
             }
         }

@@ -14,3 +14,18 @@ pub fn branch_exists(branch: &str) -> anyhow::Result<bool> {
     let output = log(&revset, "change_id", true)?;
     Ok(!output.trim().is_empty())
 }
+
+pub fn check_immutable(revset: &str) -> anyhow::Result<bool> {
+    let revset_in_check = format!("{} & immutable()", revset);
+    let output = cmd!(
+        "jj",
+        "log",
+        "-r",
+        revset_in_check,
+        "-T",
+        "change_id",
+        "--no-graph"
+    )
+    .read()?;
+    Ok(!output.trim().is_empty())
+}

@@ -1,6 +1,12 @@
 use duct::cmd;
 
-use crate::{config::AppConfig, hook::run_hook, push::command_push, utils::step};
+use crate::{
+    config::AppConfig,
+    hook::run_hook,
+    push::command_push,
+    tools::check_immutable,
+    utils::{step, warning},
+};
 
 pub(crate) fn command_commit(
     config: &AppConfig,
@@ -50,22 +56,31 @@ pub(crate) fn command_amend(
     config: &AppConfig,
     into: Option<String>,
     push: bool,
-    force: bool,
     no_pre_hook: bool,
     no_post_hook: bool,
 ) -> anyhow::Result<()> {
+    let mut force = false;
+
     if let Some(pre_commit) = &config.hooks.pre_commit
         && !no_pre_hook
     {
         run_hook(config, pre_commit.clone(), "pre-commit", None)?;
     }
+
+    let into = into.unwrap_or("@-".to_string());
+
+    if check_immutable(&into)? {
+        warning("You are modifying an immutable revset!");
+        force = true;
+    }
+
     let args: Vec<&str> = vec![
         "squash",
         "--interactive",
         "--from",
         "@",
         "--into",
-        into.as_deref().unwrap_or("@-"),
+        &into,
         if force { "--ignore-immutable" } else { "" },
     ]
     .into_iter()
@@ -99,13 +114,21 @@ pub(crate) fn command_reset(
     config: &AppConfig,
     from: Option<String>,
     push: bool,
-    force: bool,
 ) -> anyhow::Result<()> {
+    let mut force = false;
+
+    let from = from.unwrap_or("@-".to_string());
+
+    if check_immutable(&from)? {
+        warning("You are modifying an immutable revset!");
+        force = true;
+    }
+
     let args: Vec<&str> = vec![
         "squash",
         "--interactive",
         "--from",
-        from.as_deref().unwrap_or("@-"),
+        &from,
         "--into",
         "@",
         if force { "--ignore-immutable" } else { "" },
