@@ -146,6 +146,10 @@ enum Commands {
 
         #[arg(long)]
         no_post_hook: bool,
+
+        /// Tags to push. If not given, no tags will be pushed. If given without values, all tags will be pushed.
+        #[arg(short, long, num_args = 0..)]
+        tags: Option<Vec<String>>,
     },
 
     /// Pull changes from the remote.
@@ -395,6 +399,7 @@ fn main() {
             upbase,
             no_pre_hook,
             no_post_hook,
+            tags,
         } => {
             if let Err(e) = command_push(
                 &config,
@@ -405,6 +410,7 @@ fn main() {
                 *upbase,
                 *no_pre_hook,
                 *no_post_hook,
+                tags.as_ref(),
             ) {
                 error(&e.to_string());
             }

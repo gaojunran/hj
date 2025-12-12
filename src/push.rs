@@ -14,6 +14,8 @@ pub(crate) fn command_push(
     upbase: bool,
     no_pre_hook: bool,
     no_post_hook: bool,
+    with_tags: Option<&Vec<String>>,
+    // None -> no tag; Zero length -> all tags; Some -> specified tags
 ) -> anyhow::Result<()> {
     if pull {
         if branch.len() != 1 {
@@ -56,6 +58,23 @@ pub(crate) fn command_push(
     // push command
     step("Pushing changes...");
     cmd("jj", args).run()?;
+
+    // push tags with git command
+    if let Some(with_tags) = with_tags {
+        step("Pushing tags...");
+        cmd(
+            "git",
+            vec!["push", "origin"]
+                .into_iter()
+                .chain(if with_tags.is_empty() {
+                    vec!["--tags"]
+                } else {
+                    with_tags.iter().map(|s| s.as_str()).collect()
+                })
+                .collect::<Vec<&str>>(),
+        )
+        .run()?;
+    }
 
     if let Some(post_push) = &config.hooks.post_push
         && !no_post_hook
