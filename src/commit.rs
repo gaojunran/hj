@@ -43,6 +43,7 @@ pub(crate) fn command_commit(
             config.push.upbase,
             false,
             false,
+            None, // no tags
         )?;
     }
     if abandon {
@@ -105,6 +106,7 @@ pub(crate) fn command_amend(
             config.push.upbase,
             false,
             false,
+            None, // no tags
         )?;
     }
     Ok(())
@@ -150,6 +152,7 @@ pub(crate) fn command_reset(
             config.push.upbase,
             false,
             false,
+            None, // no tags
         )?;
     }
     Ok(())

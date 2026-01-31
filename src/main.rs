@@ -15,6 +15,7 @@ mod pull;
 mod push;
 mod switch;
 mod tools;
+mod tui;
 mod upbase;
 mod utils;
 
@@ -38,6 +39,7 @@ use crate::{
     pull::command_pull,
     push::command_push,
     switch::command_switch,
+    tui::command_tui,
     upbase::command_upbase,
     utils::{error, hint},
 };
@@ -275,6 +277,9 @@ enum Commands {
         remote: Option<String>,
     },
 
+    /// Launch interactive TUI mode.
+    Tui,
+
     /// External subcommands (fallback to jj)
     #[command(external_subcommand)]
     External(Vec<String>),
@@ -483,6 +488,11 @@ fn main() {
         }
         Commands::Open { remote } => {
             if let Err(e) = command_open(&config, remote.clone()) {
+                error(&e.to_string());
+            }
+        }
+        Commands::Tui => {
+            if let Err(e) = command_tui() {
                 error(&e.to_string());
             }
         }
