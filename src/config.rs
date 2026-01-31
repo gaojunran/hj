@@ -117,7 +117,9 @@ impl AppConfig {
         let xdg = env::var("XDG_CONFIG_HOME").ok();
         let global_config_path = match xdg {
             Some(xdg) => PathBuf::from(xdg).join("hj/config.toml"),
-            None => home_dir().unwrap().join(".config/hj/config.toml"),
+            None => home_dir()
+                .map(|h| h.join(".config/hj/config.toml"))
+                .unwrap_or_else(|| PathBuf::from(".config/hj/config.toml")),
         };
         // println!("global config path: {:?}", global_config_path);
 

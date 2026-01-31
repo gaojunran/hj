@@ -2,7 +2,7 @@ use duct::cmd;
 
 use crate::config::AppConfig;
 
-pub(crate) fn command_keepup(config: &AppConfig, branch: &Vec<String>) -> anyhow::Result<()> {
+pub(crate) fn command_keepup(config: &AppConfig, branch: &[String]) -> anyhow::Result<()> {
     let target = "heads(::@ & mutable() & ~description(exact:\"\") & (~empty() | merges()))";
     if branch.is_empty() {
         let source = if config.keepup.avoid_trunk {

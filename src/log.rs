@@ -5,14 +5,12 @@ use skim::prelude::*;
 #[cfg(unix)]
 use std::io::Cursor;
 
-use crate::config::AppConfig;
-
-pub(crate) fn command_log_all(config: &AppConfig) -> anyhow::Result<()> {
+pub(crate) fn command_log_all() -> anyhow::Result<()> {
     cmd!("jj", "log", "-r", "all()").run()?;
     Ok(())
 }
 
-pub(crate) fn command_log_wip(config: &AppConfig, patch: bool) -> anyhow::Result<()> {
+pub(crate) fn command_log_wip(patch: bool) -> anyhow::Result<()> {
     // all heads on branches which is wip
     let revset = "heads(:: ~ description(exact:''))..";
     if patch {
@@ -23,11 +21,7 @@ pub(crate) fn command_log_wip(config: &AppConfig, patch: bool) -> anyhow::Result
     Ok(())
 }
 
-pub(crate) fn command_log_mine(
-    config: &AppConfig,
-    patch: bool,
-    summary: bool,
-) -> anyhow::Result<()> {
+pub(crate) fn command_log_mine(patch: bool, summary: bool) -> anyhow::Result<()> {
     // all heads on branches which is mine
     let revset = "mine() & ~description(exact:'') & bookmarks()";
     let template = "bookmarks ++ ' | ' ++ change_id.shortest() ++ '/' ++ commit_id.shortest() ++ ' | ' ++ description.first_line() ++ '\n'";

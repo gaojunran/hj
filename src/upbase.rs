@@ -7,7 +7,7 @@ use crate::{
 
 pub(crate) fn command_upbase(
     config: &AppConfig,
-    branch: &Vec<String>,
+    branch: &[String],
     fetch: bool,
 ) -> anyhow::Result<()> {
     // we only need fetch, not pull,

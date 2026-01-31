@@ -5,10 +5,26 @@ use crate::{
     upbase::command_upbase, utils::step,
 };
 
+/// Push with default configuration options.
+/// This is a convenience function for internal use after commit/amend/reset.
+pub(crate) fn push_with_defaults(config: &AppConfig) -> anyhow::Result<()> {
+    command_push(
+        config,
+        &[],
+        &[],
+        config.push.still,
+        config.push.pull,
+        config.push.upbase,
+        false,
+        false,
+        None,
+    )
+}
+
 pub(crate) fn command_push(
     config: &AppConfig,
-    branch: &Vec<String>,
-    change: &Vec<String>,
+    branch: &[String],
+    change: &[String],
     still: bool, // do not keepup. often seen in stacked prs.
     pull: bool,
     upbase: bool,

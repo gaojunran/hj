@@ -25,7 +25,10 @@ pub(crate) fn command_open(config: &AppConfig, remote: Option<String>) -> anyhow
                 .lines()
                 .find(|x| x.contains(&remote))
                 .ok_or_else(|| anyhow::anyhow!("Remote not found"))?;
-            let remote_url = remote_line.split_once(' ').unwrap().1;
+            let remote_url = remote_line
+                .split_once(' ')
+                .ok_or_else(|| anyhow::anyhow!("Invalid remote format"))?
+                .1;
             webbrowser::open(remote_url)?;
         }
     }

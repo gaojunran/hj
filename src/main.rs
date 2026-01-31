@@ -19,7 +19,7 @@ mod tui;
 mod upbase;
 mod utils;
 
-use anyhow::{Result, anyhow};
+use anyhow::anyhow;
 use clap::{Parser, Subcommand};
 use commit::command_commit;
 use duct::cmd;
@@ -294,6 +294,7 @@ fn check_jj_installed() -> anyhow::Result<()> {
     Ok(())
 }
 
+#[allow(dead_code)]
 fn check_gh_installed() -> anyhow::Result<()> {
     if cmd!("gh", "--version").read().is_err() {
         return Err(anyhow!(
@@ -408,8 +409,8 @@ fn main() {
         } => {
             if let Err(e) = command_push(
                 &config,
-                branch,
-                change,
+                branch.as_slice(),
+                change.as_slice(),
                 *still,
                 *pull,
                 *upbase,
@@ -462,27 +463,27 @@ fn main() {
             }
         }
         Commands::LogAll => {
-            if let Err(e) = command_log_all(&config) {
+            if let Err(e) = command_log_all() {
                 error(&e.to_string());
             }
         }
         Commands::LogWip { patch } => {
-            if let Err(e) = command_log_wip(&config, *patch) {
+            if let Err(e) = command_log_wip(*patch) {
                 error(&e.to_string());
             }
         }
         Commands::LogMine { patch, summary } => {
-            if let Err(e) = command_log_mine(&config, *patch, *summary) {
+            if let Err(e) = command_log_mine(*patch, *summary) {
                 error(&e.to_string());
             }
         }
         Commands::New { mine, rest } => {
-            if let Err(e) = command_new(&config, rest.clone(), *mine) {
+            if let Err(e) = command_new(rest.clone(), *mine) {
                 error(&e.to_string());
             }
         }
         Commands::Edit { mine, rest } => {
-            if let Err(e) = command_edit(&config, rest.clone(), *mine) {
+            if let Err(e) = command_edit(rest.clone(), *mine) {
                 error(&e.to_string());
             }
         }

@@ -1,12 +1,6 @@
 use duct::cmd;
 
-use crate::config::AppConfig;
-
-pub(crate) fn command_edit(
-    config: &AppConfig,
-    rest: Vec<String>,
-    mine: bool,
-) -> anyhow::Result<()> {
+pub(crate) fn command_edit(rest: Vec<String>, mine: bool) -> anyhow::Result<()> {
     if mine {
         #[cfg(not(unix))]
         {

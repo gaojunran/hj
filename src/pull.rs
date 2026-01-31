@@ -117,17 +117,16 @@ pub(crate) fn command_pull(_config: &AppConfig, branch: Option<String>) -> anyho
     }
 
     // Build branch list for fetch: pass the single branch if provided, otherwise empty.
-    let branches: Vec<String> = if let Some(b) = branch.clone() {
-        vec![b.clone()]
-    } else {
-        vec![]
-    };
+    let branches: Vec<String> = branch
+        .as_ref()
+        .map(|b| vec![b.clone()])
+        .unwrap_or_default();
 
     step("Fetching changes from the remote...");
     // Use centralized fetch command which will track bookmarks when branches are provided.
     command_fetch(_config, branches)?;
 
-    if let Some(branch) = branch {
+    if let Some(branch) = &branch {
         step(format!("Rebasing on `{branch}`...").as_str());
         cmd!("jj", "rebase", "-d", &branch).run()?;
     } else {

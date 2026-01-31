@@ -1,5 +1,3 @@
-use std::iter::FromIterator;
-
 use crate::{
     config::AppConfig,
     utils::{step, warning},

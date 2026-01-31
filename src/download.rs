@@ -123,28 +123,6 @@ fn download_recursive(client: &Client, url: &str, out_path: &Path) -> Result<()>
     Ok(())
 }
 
-fn parse_repo(input: &str) -> Option<(String, String)> {
-    if let Some(stripped) = input
-        .strip_prefix("http://")
-        .or_else(|| input.strip_prefix("https://"))
-    {
-        let parts: Vec<&str> = stripped.split('/').collect();
-        if parts.len() >= 3 && parts[0].ends_with(".com") {
-            return Some((
-                parts[1].to_string(),
-                parts[2].to_string().replace(".git", ""),
-            ));
-        }
-    } else {
-        let parts: Vec<&str> = input.split('/').collect();
-        if parts.len() == 2 {
-            return Some((parts[0].to_string(), parts[1].to_string()));
-        }
-    }
-
-    None
-}
-
 fn build_url_whole(owner: &str, repo: &str) -> Option<String> {
     Some(format!(
         "https://github.com/{owner}/{repo}/archive/HEAD.tar.gz"

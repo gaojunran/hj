@@ -3,9 +3,9 @@ use duct::cmd;
 use crate::{
     config::AppConfig,
     hook::run_hook,
-    push::command_push,
+    push::push_with_defaults,
     tools::check_immutable,
-    utils::{step, warning},
+    utils::{build_jj_args, step, warning},
 };
 
 pub(crate) fn command_commit(
@@ -31,20 +31,8 @@ pub(crate) fn command_commit(
     {
         run_hook(config, post_commit.clone(), "post-commit", None)?;
     }
-    // TODO: should we give more options here?
     if push {
-        // step("Pushing changes...");
-        command_push(
-            config,
-            &Vec::new(), // auto select what to push
-            &Vec::new(), // no changes should be given
-            config.push.still,
-            config.push.pull,
-            config.push.upbase,
-            false,
-            false,
-            None, // no tags
-        )?;
+        push_with_defaults(config)?;
     }
     if abandon {
         step("Abandoning uncommitted changes...");
@@ -60,22 +48,19 @@ pub(crate) fn command_amend(
     no_pre_hook: bool,
     no_post_hook: bool,
 ) -> anyhow::Result<()> {
-    let mut force = false;
-
     if let Some(pre_commit) = &config.hooks.pre_commit
         && !no_pre_hook
     {
         run_hook(config, pre_commit.clone(), "pre-commit", None)?;
     }
 
-    let into = into.unwrap_or("@-".to_string());
-
-    if check_immutable(&into)? {
+    let into = into.unwrap_or_else(|| "@-".to_string());
+    let force = check_immutable(&into)?;
+    if force {
         warning("You are modifying an immutable revset!");
-        force = true;
     }
 
-    let args: Vec<&str> = vec![
+    let args = build_jj_args(&[
         "squash",
         "--interactive",
         "--from",
@@ -83,10 +68,7 @@ pub(crate) fn command_amend(
         "--into",
         &into,
         if force { "--ignore-immutable" } else { "" },
-    ]
-    .into_iter()
-    .filter(|s| !s.is_empty())
-    .collect();
+    ]);
     cmd("jj", &args).run()?;
 
     if let Some(post_commit) = &config.hooks.post_commit
@@ -94,20 +76,8 @@ pub(crate) fn command_amend(
     {
         run_hook(config, post_commit.clone(), "post-commit", None)?;
     }
-    // TODO: should we give more options here?
     if push {
-        // step("Pushing changes...");
-        command_push(
-            config,
-            &Vec::new(), // auto select what to push
-            &Vec::new(), // no changes should be given
-            config.push.still,
-            config.push.pull,
-            config.push.upbase,
-            false,
-            false,
-            None, // no tags
-        )?;
+        push_with_defaults(config)?;
     }
     Ok(())
 }
@@ -117,16 +87,13 @@ pub(crate) fn command_reset(
     from: Option<String>,
     push: bool,
 ) -> anyhow::Result<()> {
-    let mut force = false;
-
-    let from = from.unwrap_or("@-".to_string());
-
-    if check_immutable(&from)? {
+    let from = from.unwrap_or_else(|| "@-".to_string());
+    let force = check_immutable(&from)?;
+    if force {
         warning("You are modifying an immutable revset!");
-        force = true;
     }
 
-    let args: Vec<&str> = vec![
+    let args = build_jj_args(&[
         "squash",
         "--interactive",
         "--from",
@@ -134,42 +101,24 @@ pub(crate) fn command_reset(
         "--into",
         "@",
         if force { "--ignore-immutable" } else { "" },
-    ]
-    .into_iter()
-    .filter(|s| !s.is_empty())
-    .collect();
-
+    ]);
     cmd("jj", &args).run()?;
-    // TODO: should we give more options here?
+
     if push {
-        // step("Pushing changes...");
-        command_push(
-            config,
-            &Vec::new(), // auto select what to push
-            &Vec::new(), // no changes should be given
-            config.push.still,
-            config.push.pull,
-            config.push.upbase,
-            false,
-            false,
-            None, // no tags
-        )?;
+        push_with_defaults(config)?;
     }
     Ok(())
 }
 
 pub(crate) fn command_throw(from: Option<String>, force: bool) -> anyhow::Result<()> {
-    let args: Vec<&str> = vec![
+    let from_ref = from.as_deref().unwrap_or("@");
+    let args = build_jj_args(&[
         "restore",
         "--interactive",
         "--changes-in",
-        from.as_deref().unwrap_or("@"),
+        from_ref,
         if force { "--ignore-immutable" } else { "" },
-    ]
-    .into_iter()
-    .filter(|s| !s.is_empty())
-    .collect();
-
+    ]);
     cmd("jj", &args).run()?;
     Ok(())
 }
